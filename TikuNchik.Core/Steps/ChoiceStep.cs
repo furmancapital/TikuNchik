@@ -11,12 +11,12 @@ namespace TikuNchik.Core.Steps
     /// </summary>
     public class ChoiceStep : Step
     {
-        public ChoiceStep (ISet<KeyValuePair<Func<Integration, bool>, IStep>> criteria)
+        public ChoiceStep (IEnumerable<KeyValuePair<Func<Integration, bool>, IStep>> criteria)
         {
             Criteria = criteria ?? throw new ArgumentNullException(nameof(criteria));
         }
 
-        public ISet<KeyValuePair<Func<Integration, bool>, IStep>> Criteria { get; }
+        public IEnumerable<KeyValuePair<Func<Integration, bool>, IStep>> Criteria { get; }
 
         public override async Task<StepExecution> PerformStepExecutionAync(Integration integration)
         {
