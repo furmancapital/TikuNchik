@@ -9,4 +9,8 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TikuNchik.Core\TikuNchik.Core.csproj" />
+  </ItemGroup>
+
 </Project>

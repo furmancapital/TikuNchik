@@ -11,13 +11,13 @@ namespace TikuNchik.Core.Steps
     /// </summary>
     public class FilterStep : IStep
     {
-        public FilterStep (IEnumerable<Step> stepsToExecute, Func<Integration, bool> filterToApply)
+        public FilterStep (IEnumerable<IStep> stepsToExecute, Func<Integration, bool> filterToApply)
         {
             StepsToExecute = stepsToExecute ?? throw new ArgumentNullException(nameof(stepsToExecute));
             FilterToApply = filterToApply ?? throw new ArgumentNullException(nameof(filterToApply));
         }
 
-        public IEnumerable<Step> StepsToExecute { get; }
+        public IEnumerable<IStep> StepsToExecute { get; }
         public Func<Integration, bool> FilterToApply { get; }
 
         public async Task<StepExecution> PerformStepExecutionAync(Integration integration)
