@@ -6,20 +6,38 @@ namespace TikuNchik.Core.Builders
 {
     public class ChoiceBuilder
     {
-        private ChoiceBuilder()
+        private ChoiceBuilder(Flow sourceFlow, IntegrationFlowBuilder builder)
         {
-
+            this.SourceFlow = sourceFlow;
+            this.Builder = builder;
         }
 
-        public static ChoiceBuilder Choice()
+
+        private Flow SourceFlow
         {
-            return new ChoiceBuilder();
+            get; set;
         }
 
-        public TargetStepBuilder When (Func<Integration, bool> matcher)
+        private IntegrationFlowBuilder Builder
         {
-            throw new NotImplementedException();
+            get; set;
         }
+
+        public static ChoiceBuilder Choice(Flow sourceFlow, IntegrationFlowBuilder builder)
+        {
+            return new ChoiceBuilder(sourceFlow, builder);
+        }
+
+        public ChoiceStepBuilder When (Func<Integration, bool> matcher)
+        {
+            return new ChoiceStepBuilder(this.SourceFlow, this);
+        }
+
+        public IntegrationFlowBuilder EndChoice()
+        {
+            return this.Builder;
+        }
+
 
     }
 }

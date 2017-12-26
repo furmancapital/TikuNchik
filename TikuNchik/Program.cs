@@ -16,6 +16,13 @@ namespace TikuNchik
                     .AddStepToExecute(null)
                     .AddStepToExecute(null)
                 .EndFilter()
+                .Choice()
+                    .When(x => x.Id == null)
+                        .AddStep(null)
+                        .AddStep(null)
+                    .EndWhen()
+                .EndChoice()
+                .Build();
                 
                 
                 

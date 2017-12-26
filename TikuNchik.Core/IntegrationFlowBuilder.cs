@@ -24,7 +24,7 @@ namespace TikuNchik.Core
 
         public ChoiceBuilder Choice()
         {
-            return ChoiceBuilder.Choice();
+            return ChoiceBuilder.Choice(this.CreatedFlow, this);
         }
 
         public FilterBuilder Filter(Func<Integration, bool> filter)
