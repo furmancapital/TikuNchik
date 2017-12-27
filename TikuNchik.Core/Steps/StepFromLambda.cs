@@ -17,16 +17,15 @@ namespace TikuNchik.Core.Steps
 
         public Action<Integration> Action { get; }
 
-        public async Task<StepExecution> PerformStepExecutionAync(Integration integration)
+        public async Task PerformStepExecutionAync(Integration integration)
         {
-            var asyncFuncExecution = new Func<Task<StepExecution>>(() =>
+            var asyncFuncExecution = new Func<Task>(() =>
             {
                 Action(integration);
-                return Task.FromResult<StepExecution>(new StepExecution());
+                return Task.FromResult(0);
             });
 
-            var result = await asyncFuncExecution();
-            return result;
+            await asyncFuncExecution();
         }
     }
 }

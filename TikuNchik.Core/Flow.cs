@@ -27,7 +27,7 @@ namespace TikuNchik.Core
             var integration = new Integration();
             foreach (var step in this.Steps)
             {
-                var stepResult = await step.PerformStepExecutionAync(integration);
+                await step.PerformStepExecutionAync(integration);
             }
 
             return integration;
@@ -37,7 +37,7 @@ namespace TikuNchik.Core
         {
             foreach (var step in this.Steps)
             {
-                var stepResult = await step.PerformStepExecutionAync(integration);
+                await step.PerformStepExecutionAync(integration);
             }
 
         }

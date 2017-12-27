@@ -14,11 +14,9 @@ namespace TikuNchik.Core.Steps
 
         public IFlow TargetFlow { get; }
 
-        public async Task<StepExecution> PerformStepExecutionAync(Integration integration)
+        public async Task PerformStepExecutionAync(Integration integration)
         {
             await this.TargetFlow.ExecuteCurrentIntegration(integration);
-            return new StepExecution();
-
         }
     }
 }

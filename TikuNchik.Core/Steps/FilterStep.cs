@@ -11,29 +11,39 @@ namespace TikuNchik.Core.Steps
     /// </summary>
     public class FilterStep : IStep
     {
-        public FilterStep (IEnumerable<IStep> stepsToExecute, Func<Integration, bool> filterToApply)
+        public FilterStep(Func<Integration, bool> filterToApply, IEnumerable<IStep> stepsToExecute)
         {
             StepsToExecute = stepsToExecute ?? throw new ArgumentNullException(nameof(stepsToExecute));
             FilterToApply = filterToApply ?? throw new ArgumentNullException(nameof(filterToApply));
         }
 
+        public FilterStep(Func<Integration, bool> filterToApply, Action<Integration> actionToExecute)
+        {
+            if (actionToExecute == null)
+            {
+                throw new ArgumentNullException(nameof(actionToExecute));
+            }
+
+            FilterToApply = filterToApply ?? throw new ArgumentNullException(nameof(filterToApply));
+            this.StepsToExecute = new[]
+            {
+                StepBuilderHelpers.FromLambda(actionToExecute)
+            };
+        }
+
         public IEnumerable<IStep> StepsToExecute { get; }
         public Func<Integration, bool> FilterToApply { get; }
 
-        public async Task<StepExecution> PerformStepExecutionAync(Integration integration)
+        public async Task PerformStepExecutionAync(Integration integration)
         {
             if (this.FilterToApply(integration))
             {
-                return new StepExecution();
+                foreach (var stepToExecute in this.StepsToExecute)
+                {
+                    await stepToExecute.PerformStepExecutionAync(integration);
+                }
             }
 
-            foreach (var stepToExecute in this.StepsToExecute)
-            {
-                var result = await stepToExecute.PerformStepExecutionAync(integration);
-                integration.AddStepExecutionResult(result);
-            }
-
-            return new StepExecution();
         }
     }
 }

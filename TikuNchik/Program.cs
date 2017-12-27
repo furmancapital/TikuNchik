@@ -15,7 +15,10 @@ namespace TikuNchik
             Console.WriteLine("Hello World!");
 
             var serviceCollection = new ServiceCollection()
-                .AddLogging((x) => x.AddProvider(new Microsoft.Extensions.Logging.Console.ConsoleLoggerProvider(new ConsoleLoggerSettings())))
+                .AddLogging((x) =>
+                {
+                    x.AddConsole();
+                })
                 .BuildServiceProvider();
 
             var factory = serviceCollection.GetService<ILoggerFactory>();
@@ -23,21 +26,21 @@ namespace TikuNchik
             var flow = IntegrationFlowBuilder
                 .Create(serviceCollection)
                 .WireTap()
-                .Filter(x => x.Id == null)
+                .Filter(x => x.Id != null)
                     .AddStepToExecute((x) =>
                     {
                         System.Console.WriteLine(x);
                     })
                 .EndFilter()
                 .Choice()
-                    .When(x => x.Id == null)
+                    .When(x => x.Id != null)
                         .AddStep((x) =>
                         {
                             System.Console.WriteLine(x);
                         })
                     .EndWhen()
                 .EndChoice()
-                //.Log((x,y) => y.Log(Microsoft.Extensions.Logging.LogLevel.Debug, new Microsoft.Extensions.Logging.EventId(), 
+                .Log((x, y) => y.LogInformation("This is only a test!"))
                 .Build();
 
             var result = await flow.CreateIntegration<string>("ABC");

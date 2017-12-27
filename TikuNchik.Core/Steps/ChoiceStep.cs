@@ -18,17 +18,16 @@ namespace TikuNchik.Core.Steps
 
         public IEnumerable<KeyValuePair<Func<Integration, bool>, IStep>> Criteria { get; }
 
-        public override async Task<StepExecution> PerformStepExecutionAync(Integration integration)
+        public override async Task PerformStepExecutionAync(Integration integration)
         {
             foreach (var criteria in this.Criteria)
             {
                 if (criteria.Key(integration))
                 {
-                    return await criteria.Value.PerformStepExecutionAync(integration);
+                    await criteria.Value.PerformStepExecutionAync(integration);
+                    break;
                 }
             }
-
-            return new StepExecution();
         }
 
     }

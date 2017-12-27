@@ -72,7 +72,7 @@ namespace TikuNchik.Core
 
         public IntegrationFlowBuilder EndFilter()
         {
-            this.SourceFlow.AddStep(new FilterStep(this.StepsToExecute, this.FilterFunction));
+            this.SourceFlow.AddStep(new FilterStep(this.FilterFunction, this.StepsToExecute));
             return this.Builder;
         }
     }

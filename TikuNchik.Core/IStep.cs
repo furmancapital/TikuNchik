@@ -7,6 +7,6 @@ namespace TikuNchik.Core
 {
     public interface IStep
     {
-        Task<StepExecution> PerformStepExecutionAync(Integration integration);
+        Task PerformStepExecutionAync(Integration integration);
     }
 }

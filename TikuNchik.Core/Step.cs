@@ -7,6 +7,6 @@ namespace TikuNchik.Core
 {
     public abstract class Step : IStep
     {
-        public abstract Task<StepExecution> PerformStepExecutionAync(Integration integration);
+        public abstract Task PerformStepExecutionAync(Integration integration);
     }
 }

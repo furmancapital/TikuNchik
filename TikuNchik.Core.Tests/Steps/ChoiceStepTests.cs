@@ -41,7 +41,7 @@ namespace TikuNchik.Core.Steps
         public void PerformStepExecutionAync_Match_Should_Trigger_Execution()
         {
             this.Step1.Setup(x => x.PerformStepExecutionAync(It.IsAny<Integration>()))
-                .Returns(Task.FromResult<StepExecution>(new StepExecution()));
+                .Returns(Task.FromResult(0));
 
             Func<Integration, bool> lambda = (x) => true;
 
@@ -59,7 +59,7 @@ namespace TikuNchik.Core.Steps
         public void PerformStepExecutionAync_Match_Should_Trigger_Execution_If_Not_First_Item()
         {
             this.Step2.Setup(x => x.PerformStepExecutionAync(It.IsAny<Integration>()))
-                .Returns(Task.FromResult(new StepExecution()));
+                .Returns(Task.FromResult(0));
 
             Func<Integration, bool> lambda1 = (x) => false;
             Func<Integration, bool> lambda2 = (x) => true;
