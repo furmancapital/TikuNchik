@@ -11,7 +11,7 @@ namespace TikuNchik.Core
             private set;
         } = Guid.NewGuid();
 
-        private Stack<StepExecution> _stepExecutions;
+        private Stack<StepExecution> _stepExecutions = new Stack<StepExecution>();
 
         public void AddStepExecutionResult (StepExecution stepExecution)
         {

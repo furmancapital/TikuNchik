@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using TikuNchik.Core.Builders;
@@ -12,9 +14,28 @@ namespace TikuNchik.Core
             get;set;
         }
 
-        public static IntegrationFlowBuilder Create()
+        private ILoggerFactory LoggerFactory
         {
-            return new IntegrationFlowBuilder();
+            get;
+            set;
+        }
+
+        private IServiceProvider DependencyInjection
+        {
+            get;set;
+        }
+
+        public static IntegrationFlowBuilder Create(IServiceProvider dependencyInjection)
+        {
+            if (dependencyInjection == null)
+            {
+                throw new ArgumentNullException(nameof(dependencyInjection));
+            }
+
+            return new IntegrationFlowBuilder()
+            {
+                DependencyInjection = dependencyInjection
+            };
         }
 
         private IntegrationFlowBuilder()
@@ -34,10 +55,15 @@ namespace TikuNchik.Core
 
         public IntegrationFlowBuilder WireTap()
         {
-            return WireTapBuilder.WireTap(this.CreatedFlow, this);
+            return WireTapBuilder.WireTap(this.CreatedFlow, this, this.DependencyInjection);
         }
 
-        public Flow Build()
+        public IntegrationFlowBuilder Log(Action<Integration, ILogger> actionToPerform)
+        {
+            return LogStepBuilder.Log(this.CreatedFlow, this, actionToPerform, this.DependencyInjection);
+        }
+
+        public IFlow Build()
         {
             return this.CreatedFlow;
         }

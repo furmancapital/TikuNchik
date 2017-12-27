@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TikuNchik.Core.Steps;
 
 namespace TikuNchik.Core.Builders
 {
@@ -32,6 +33,13 @@ namespace TikuNchik.Core.Builders
             this.StepsToExecute.Add(step);
             return this;
         }
+
+        public ChoiceStepBuilder AddStep(Action<Integration> action)
+        {
+            this.StepsToExecute.Add(StepBuilderHelpers.FromLambda(action));
+            return this;
+        }
+
 
         public ChoiceBuilder EndWhen()
         {

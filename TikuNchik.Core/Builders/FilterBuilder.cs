@@ -18,7 +18,7 @@ namespace TikuNchik.Core
             get;set;
         }
 
-        private Flow SourceFlow
+        private IBuildableFlow SourceFlow
         {
             get;set;
         }
@@ -33,7 +33,7 @@ namespace TikuNchik.Core
 
         }
 
-        public static FilterBuilder Filter(Func<Integration, bool> filterFunction, Flow sourceFlow, IntegrationFlowBuilder builder)
+        public static FilterBuilder Filter(Func<Integration, bool> filterFunction, IBuildableFlow sourceFlow, IntegrationFlowBuilder builder)
         {
             if (filterFunction == null)
             {
@@ -56,6 +56,17 @@ namespace TikuNchik.Core
             }
 
             this.StepsToExecute.Add(step);
+            return this;
+        }
+
+        public FilterBuilder AddStepToExecute (Action<Integration> actionToExecute)
+        {
+            if (actionToExecute == null)
+            {
+                throw new ArgumentNullException(nameof(actionToExecute));
+            }
+
+            this.StepsToExecute.Add(StepBuilderHelpers.FromLambda(actionToExecute));
             return this;
         }
 
