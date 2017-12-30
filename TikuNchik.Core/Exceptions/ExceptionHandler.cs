@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TikuNchik.Core.Steps
+namespace TikuNchik.Core.Exceptions
 {
     /// <summary>
     /// This step is used to provide the ability to gracefully handle exceptions while also
     /// allowing for the integration to abort execution based on custom business logic
     /// </summary>
-    public class ExceptionHandlerStep : IStep
+    public class ExceptionHandler : IExceptionHandler
     {
         public static readonly Type RootExceptionType = typeof(Exception);
 
@@ -24,9 +24,8 @@ namespace TikuNchik.Core.Steps
             get; set;
         } = new Dictionary<Type, Func<Exception, bool>>();
 
-        public ExceptionHandlerStep (IStep step, ILogger logger)
+        public ExceptionHandler (ILogger logger)
         {
-            Step = step ?? throw new ArgumentNullException(nameof(step));
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -58,23 +57,9 @@ namespace TikuNchik.Core.Steps
             }
         }
 
-        public IStep Step { get; }
         public ILogger Logger { get; }
 
-        public async Task PerformStepExecutionAync(Integration integration)
-        {
-            try
-            {
-                await this.Step.PerformStepExecutionAync(integration);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogDebug("Attempting to apply custom exception eandling");
-                AttemptToHandleException(ex);
-            }
-        }
-
-        private void AttemptToHandleException (Exception ex)
+        private async Task AttemptToHandleException (Exception ex)
         {
             var exceptionType = ex.GetType();
             Func<Exception, bool> handler;
@@ -88,15 +73,21 @@ namespace TikuNchik.Core.Steps
                 else
                 {
                     Logger.LogDebug($"No exception handler found for {exceptionType}");
-                    throw new IntegrationException(ex.Message, ex);
+                    throw new IntegrationException($"No Configured Exception Handler found for {exceptionType}", ex);
                 }
             }
 
-            if (!handler(ex))
+            if (!await Task.FromResult(handler(ex)))
             {
-                Logger.LogDebug($"Custom exception handler for {exceptionType} indicated that it cannot handle the exception");
-                throw new IntegrationException(ex.Message, ex);
+                var message = $"Custom exception handler for {exceptionType} indicated that it should not handle the exception";
+                Logger.LogDebug(message);
+                throw new IntegrationException(message, ex);
             }
+        }
+
+        public async Task HandleAsync<TException>(TException ex) where TException : Exception
+        {
+            await AttemptToHandleException(ex);
         }
     }
 }

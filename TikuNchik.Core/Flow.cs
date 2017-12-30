@@ -22,6 +22,16 @@ namespace TikuNchik.Core
             set;
         } = new List<IStep>();
 
+        private IStep ExceptionStep
+        {
+            get;set;
+        }
+
+        private IStep TransactionHandler
+        {
+            get;set;
+        }
+
         public async Task<Integration> CreateIntegration<T>(T sourceMessage)
         {
             var integration = new Integration();
@@ -42,9 +52,20 @@ namespace TikuNchik.Core
 
         }
 
+        void IBuildableFlow.AddExceptionHandler(IStep exceptionHandler)
+        {
+            if (exceptionHandler == null)
+            {
+                throw new ArgumentNullException(nameof(exceptionHandler));
+            }
+
+            this.ExceptionStep = exceptionHandler;
+        }
+
         void IBuildableFlow.AddStep(IStep step)
         {
             this.Steps.Add(step);
         }
+
     }
 }

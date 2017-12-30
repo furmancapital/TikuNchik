@@ -9,6 +9,15 @@ namespace TikuNchik.Core
     /// </summary>
     public interface IBuildableFlow
     {
+        /// <summary>
+        /// Adds a step to the flow
+        /// </summary>
+        /// <param name="step"></param>
         void AddStep(IStep step);
+        /// <summary>
+        /// Adds an exception handler to the flow
+        /// </summary>
+        /// <param name="exceptionHandler"></param>
+        void AddExceptionHandler(IStep exceptionHandler);
     }
 }

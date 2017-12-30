@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace TikuNchik.Core
+namespace TikuNchik.Core.Exceptions
 {
     /// <summary>
     /// This class indicates that an exception that was not handled has been thrown by
