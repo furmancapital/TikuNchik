@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TikuNchik.Core.Exceptions;
 
 namespace TikuNchik.Core
 {
@@ -18,6 +19,6 @@ namespace TikuNchik.Core
         /// Adds an exception handler to the flow
         /// </summary>
         /// <param name="exceptionHandler"></param>
-        void AddExceptionHandler(IStep exceptionHandler);
+        void AddExceptionHandler(IExceptionHandler exceptionHandler);
     }
 }

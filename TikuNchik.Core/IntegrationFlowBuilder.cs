@@ -63,6 +63,11 @@ namespace TikuNchik.Core
             return LogStepBuilder.Log(this.CreatedFlow, this, actionToPerform, this.DependencyInjection);
         }
 
+        public ExceptionHandlerBuilder ExceptionHandler()
+        {
+            return new ExceptionHandlerBuilder(this.CreatedFlow, this, this.DependencyInjection);
+        }
+
         public IFlow Build()
         {
             return this.CreatedFlow;

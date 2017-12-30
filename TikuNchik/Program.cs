@@ -25,13 +25,20 @@ namespace TikuNchik
 
             var flow = IntegrationFlowBuilder
                 .Create(serviceCollection)
+                
+                .ExceptionHandler()
+                    .AddExceptionHandler<InvalidOperationException>((x) => false)
+                .EndExceptionHandler()
+
                 .WireTap()
+
                 .Filter(x => x.Id != null)
                     .AddStepToExecute((x) =>
                     {
                         System.Console.WriteLine(x);
                     })
                 .EndFilter()
+                
                 .Choice()
                     .When(x => x.Id != null)
                         .AddStep((x) =>
@@ -40,6 +47,7 @@ namespace TikuNchik
                         })
                     .EndWhen()
                 .EndChoice()
+                
                 .Log((x, y) => y.LogInformation("This is only a test!"))
                 .Build();
 

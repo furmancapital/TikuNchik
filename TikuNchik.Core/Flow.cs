@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using TikuNchik.Core.Exceptions;
 
 namespace TikuNchik.Core
 {
@@ -22,7 +23,7 @@ namespace TikuNchik.Core
             set;
         } = new List<IStep>();
 
-        private IStep ExceptionStep
+        private IExceptionHandler ExceptionHandler
         {
             get;set;
         }
@@ -52,14 +53,9 @@ namespace TikuNchik.Core
 
         }
 
-        void IBuildableFlow.AddExceptionHandler(IStep exceptionHandler)
+        void IBuildableFlow.AddExceptionHandler(IExceptionHandler exceptionHandler)
         {
-            if (exceptionHandler == null)
-            {
-                throw new ArgumentNullException(nameof(exceptionHandler));
-            }
-
-            this.ExceptionStep = exceptionHandler;
+            this.ExceptionHandler = exceptionHandler ?? throw new ArgumentNullException(nameof(exceptionHandler));
         }
 
         void IBuildableFlow.AddStep(IStep step)
