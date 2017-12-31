@@ -28,8 +28,15 @@ namespace TikuNchik.Core.Builders
 
         public ChoiceBuilder EndWhen()
         {
-            base.EndChoiceAction();
+            EndChoiceAction();
             return this.Builder;
+        }
+
+        protected override ChoiceBuilder EndChoiceAction()
+        {
+            this.Builder.AddStep(this.Matcher, StepBuilderHelpers.WrapMultipleSequentialSteps(this.StepsToExecute));
+            return this.Builder;
+
         }
     }
 }

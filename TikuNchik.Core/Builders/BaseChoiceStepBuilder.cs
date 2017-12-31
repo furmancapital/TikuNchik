@@ -41,10 +41,6 @@ namespace TikuNchik.Core.Builders
             this.StepsToExecute.Add(StepBuilderHelpers.FromLambda(action));
         }
 
-        protected ChoiceBuilder EndChoiceAction()
-        {
-            this.Builder.AddStep(this.Matcher, StepBuilderHelpers.WrapMultipleSequentialSteps(this.StepsToExecute));
-            return this.Builder;
-        }
+        protected abstract ChoiceBuilder EndChoiceAction();
     }
 }

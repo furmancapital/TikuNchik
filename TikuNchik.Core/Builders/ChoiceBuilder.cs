@@ -29,9 +29,19 @@ namespace TikuNchik.Core.Builders
             get; set;
         } = new List<KeyValuePair<Func<Integration, bool>, IStep>>();
 
+        private IStep DefaultHandler
+        {
+            get;set;
+        }
+
         internal void AddStep (Func<Integration, bool> matcher, IStep step)
         {
             this.GeneratedSteps.Add(new KeyValuePair<Func<Integration, bool>, IStep>(matcher, step));
+        }
+
+        internal void AddDefaultStep (IStep step)
+        {
+            this.DefaultHandler = step;
         }
 
         public static ChoiceBuilder Choice(IBuildableFlow sourceFlow, IntegrationFlowBuilder builder)
@@ -58,6 +68,7 @@ namespace TikuNchik.Core.Builders
         {
             this.SourceFlow.AddStep(StepBuilderHelpers.FromLambda(async (x) => 
             {
+                var defaultStep = this.DefaultHandler;
                 foreach (var step in this.GeneratedSteps)
                 {
                     if (step.Key(x))
@@ -65,6 +76,11 @@ namespace TikuNchik.Core.Builders
                         await step.Value.PerformStepExecutionAync(x);
                         break;
                     }
+                }
+
+                if (defaultStep != null)
+                {
+                    await defaultStep.PerformStepExecutionAync(x);
                 }
             }));
             return this.Builder;

@@ -79,5 +79,55 @@ namespace TikuNchik.Core.Builders
 
             }
         }
+
+        [Fact]
+        public void EndChoice_Verify_Matching_Default_Properly_Triggered()
+        {
+            using (var choiceTriggered = new ManualResetEventSlim())
+            {
+                var flow = this.FlowBuilder
+                    .Choice()
+                        .When((x) => x.Headers.ContainsKey("A"))
+                        //do nothing
+                        .EndWhen()
+                        .Default()
+                            .AddDefaultStep((x) => choiceTriggered.Set())
+                        .EndDefault()
+                    .EndChoice()
+                .Build();
+
+                var integration = this.CreateIntegration();
+                integration.AddHeader("B", null);
+                flow.ExecuteCurrentIntegration(integration);
+
+                Assert.True(choiceTriggered.Wait(TimeSpan.FromSeconds(0)));
+
+            }
+        }
+
+
+        [Fact]
+        public void EndChoice_Verify_Matcher_Properly_Triggered_Even_If_Added_After_Default()
+        {
+            using (var choiceTriggered = new ManualResetEventSlim())
+            {
+                var flow = this.FlowBuilder
+                    .Choice()
+                        .Default()
+                        .EndDefault()
+                        .When((x) => x.Headers.ContainsKey("A"))
+                            .AddChoiceStep((x) => choiceTriggered.Set())
+                        .EndWhen()
+                    .EndChoice()
+                .Build();
+
+                var integration = this.CreateIntegration();
+                integration.AddHeader("A", null);
+                flow.ExecuteCurrentIntegration(integration);
+
+                Assert.True(choiceTriggered.Wait(TimeSpan.FromSeconds(0)));
+
+            }
+        }
     }
 }
