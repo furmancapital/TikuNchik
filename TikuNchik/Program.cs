@@ -21,7 +21,7 @@ namespace TikuNchik
                 })
                 .BuildServiceProvider();
 
-            var factory = serviceCollection.GetService<ILoggerFactory>();
+            var factory = serviceCollection.GetRequiredService<ILoggerFactory>();
 
             var flow = IntegrationFlowBuilder
                 .Create(serviceCollection)
@@ -41,11 +41,17 @@ namespace TikuNchik
                 
                 .Choice()
                     .When(x => x.Id != null)
-                        .AddStep((x) =>
+                        .AddChoiceStep((x) =>
                         {
-                            System.Console.WriteLine(x);
-                        })
+                            System.Console.WriteLine("AAAAA");
+                       })
                     .EndWhen()
+                    .Default()
+                        .AddDefaultStep((x) =>
+                        {
+                            System.Console.WriteLine("AAAAA");
+                        })
+                     .EndDefault()
                 .EndChoice()
                 
                 .Log((x, y) => y.LogInformation("This is only a test!"))

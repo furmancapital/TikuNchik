@@ -10,5 +10,10 @@ namespace TikuNchik.Core.Steps
         {
             return new StepFromLambda(action);
         }
+
+        public static IStep WrapMultipleSequentialSteps (IEnumerable<IStep> steps)
+        {
+            return new WrapSequentialSteps(steps);
+        }
     }
 }

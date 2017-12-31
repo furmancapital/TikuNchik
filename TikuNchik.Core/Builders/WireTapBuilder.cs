@@ -11,7 +11,7 @@ namespace TikuNchik.Core.Builders
     {
         public static IntegrationFlowBuilder WireTap(IBuildableFlow sourceFlow, IntegrationFlowBuilder builder, IServiceProvider serviceProvider)
         {
-            var wireTapStep = new WireTapStep(serviceProvider.GetService<ILoggerFactory>().CreateLogger<WireTapStep>());
+            var wireTapStep = new WireTapStep(serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger<WireTapStep>());
             sourceFlow.AddStep(wireTapStep);
             return builder;
         }

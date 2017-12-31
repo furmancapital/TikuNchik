@@ -11,7 +11,7 @@ namespace TikuNchik.Core.Builders
     {
         public static IntegrationFlowBuilder Log(IBuildableFlow sourceFlow, IntegrationFlowBuilder builder, Action<Integration, ILogger> action, IServiceProvider serviceProvider)
         {
-            var logStep = new LogStep(serviceProvider.GetService<ILoggerFactory>().CreateLogger<LogStep>(), action);
+            var logStep = new LogStep(serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger<LogStep>(), action);
             sourceFlow.AddStep(logStep);
             return builder;
         }

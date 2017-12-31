@@ -31,7 +31,7 @@ namespace TikuNchik.Core.Builders
             this.SourceFlow = sourceFlow ?? throw new ArgumentNullException(nameof(sourceFlow));
             this.Builder = builder ?? throw new ArgumentNullException(nameof(builder));
             this.ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-            this.ExceptionHander = new ExceptionHandler(this.ServiceProvider.GetService<ILogger<ExceptionHandler>>());
+            this.ExceptionHander = new ExceptionHandler(this.ServiceProvider.GetRequiredService<ILogger<ExceptionHandler>>());
         }
 
         public ExceptionHandlerBuilder AddExceptionHandler<TException>(Func<Exception, bool> handlerToAdd)
