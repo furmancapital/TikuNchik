@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using TikuNchik.Core.Helpers;
 
 namespace TikuNchik.Core.Steps
 {
@@ -42,6 +43,10 @@ namespace TikuNchik.Core.Steps
                 {
                     await stepToExecute.PerformStepExecutionAync(integration);
                 }
+            }
+            else
+            {
+                integration.SetFilteredOut("Filtered out by filter");
             }
 
         }

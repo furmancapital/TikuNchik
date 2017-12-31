@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace TikuNchik.Core
@@ -11,6 +12,28 @@ namespace TikuNchik.Core
             private set;
         } = Guid.NewGuid();
 
+        private ConcurrentDictionary<string, object> InternalHeaders
+        {
+            get;
+        } = new ConcurrentDictionary<string, object>();
+
+        public IReadOnlyDictionary<string, object> Headers
+        {
+            get
+            {
+                return this.InternalHeaders;
+            }
+        }
+
+        public void AddHeader (string header, object headerValue)
+        {
+            if (header == null)
+            {
+                throw new ArgumentNullException(nameof(header));
+            }
+
+            this.InternalHeaders[header] = headerValue;
+        }
     }
 
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using TikuNchik.Core.Helpers;
 using Xunit;
 
 namespace TikuNchik.Core.Steps
@@ -33,6 +34,11 @@ namespace TikuNchik.Core.Steps
             this.TargetStep = new Mock<IStep>();
         }
 
+        private Integration CreateIntegration()
+        {
+            return new Integration();
+        }
+
         [Fact]
         public void PerformStepExecutionAync_If_FilteredOut_DoNotExecute_Step()
         {
@@ -41,9 +47,24 @@ namespace TikuNchik.Core.Steps
 
             var step = this.GetFilterStepWithoutLambda(((x) => false));
 
-            step.PerformStepExecutionAync(new Integration()).Wait();
+            var integration = CreateIntegration();
+            step.PerformStepExecutionAync(integration).Wait();
 
             this.TargetStep.Verify(x => x.PerformStepExecutionAync(It.IsAny<Integration>()), Times.Never());
+        }
+
+        [Fact]
+        public void PerformStepExecutionAync_If_FilteredOut_VerifyFlaggedAsSuch()
+        {
+            this.TargetStep.Setup(x => x.PerformStepExecutionAync(It.IsAny<Integration>()))
+                .Returns(Task.FromResult(0));
+
+            var step = this.GetFilterStepWithoutLambda(((x) => false));
+
+            var integration = CreateIntegration();
+            step.PerformStepExecutionAync(integration).Wait();
+
+            Assert.True(integration.WasFilteredOut());
         }
 
 
@@ -55,9 +76,26 @@ namespace TikuNchik.Core.Steps
 
             var step = this.GetFilterStepWithoutLambda(((x) => true));
 
-            step.PerformStepExecutionAync(new Integration()).Wait();
+            var integration = CreateIntegration();
+            step.PerformStepExecutionAync(integration).Wait();
 
             this.TargetStep.VerifyAll();
+        }
+
+
+        [Fact]
+        public void PerformStepExecutionAync_If_NotFilteredOut_VerifyNotFlaggedAsFilteredOut()
+        {
+            this.TargetStep.Setup(x => x.PerformStepExecutionAync(It.IsAny<Integration>()))
+                .Returns(Task.FromResult(0));
+
+            var step = this.GetFilterStepWithoutLambda(((x) => true));
+
+            var integration = CreateIntegration();
+            step.PerformStepExecutionAync(integration).Wait();
+
+            Assert.False(integration.WasFilteredOut());
+
         }
 
         [Fact]
@@ -71,7 +109,8 @@ namespace TikuNchik.Core.Steps
 
                 var step = this.GetFilterStepWithLambda(((x) => false), (x) => lambdaCalled.Set());
 
-                step.PerformStepExecutionAync(new Integration()).Wait();
+                var integration = CreateIntegration();
+                step.PerformStepExecutionAync(integration).Wait();
 
                 Assert.False(lambdaCalled.Wait(TimeSpan.FromSeconds(0)), "SHould not trigger action lambda when filtered out");
             }
@@ -89,7 +128,8 @@ namespace TikuNchik.Core.Steps
 
                 var step = this.GetFilterStepWithLambda(((x) => true), (x) => lambdaCalled.Set());
 
-                step.PerformStepExecutionAync(new Integration()).Wait();
+                var integration = CreateIntegration();
+                step.PerformStepExecutionAync(integration).Wait();
 
                 Assert.True(lambdaCalled.Wait(TimeSpan.FromSeconds(0)), "Should trigger action lambda when NOT filtered out");
             }

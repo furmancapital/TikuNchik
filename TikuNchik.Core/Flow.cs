@@ -28,11 +28,6 @@ namespace TikuNchik.Core
             get;set;
         }
 
-        private IStep TransactionHandler
-        {
-            get;set;
-        }
-
         public async Task<Integration> CreateIntegration<T>(T sourceMessage)
         {
             var integration = new Integration();
