@@ -12,17 +12,21 @@ namespace TikuNchik.Core.Steps
     /// </summary>
     public class DependencyResolvedStep<TItem> : IStep
     {
-        public DependencyResolvedStep (IServiceProvider serviceProvider)
+        public DependencyResolvedStep (IServiceProvider serviceProvider, Action<TItem, Integration> action)
         {
             ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+            Action = action ?? throw new ArgumentNullException(nameof(action));
         }
 
 
         public IServiceProvider ServiceProvider { get; }
+        public Action<TItem, Integration> Action { get; }
 
         public Task PerformStepExecutionAync(Integration integration)
         {
-            throw new NotImplementedException();
+            var targetDependency = this.ServiceProvider.GetRequiredService<TItem>();
+            Action(targetDependency, integration);
+            return Task.FromResult(0);
         }
     }
 }
