@@ -5,7 +5,7 @@ using TikuNchik.Core.Steps;
 
 namespace TikuNchik.Core
 {
-    public class FilterBuilder
+    public class FilterBuilder<TBody>
     {
         private List<IStep> StepsToExecute
         {
@@ -23,7 +23,7 @@ namespace TikuNchik.Core
             get;set;
         }
 
-        private IntegrationFlowBuilder Builder
+        private IntegrationFlowBuilder<TBody> Builder
         {
             get; set;
         }
@@ -33,14 +33,14 @@ namespace TikuNchik.Core
 
         }
 
-        public static FilterBuilder Filter(Func<Integration, bool> filterFunction, IBuildableFlow sourceFlow, IntegrationFlowBuilder builder)
+        public static FilterBuilder<TBody> Filter(Func<Integration, bool> filterFunction, IBuildableFlow sourceFlow, IntegrationFlowBuilder<TBody> builder)
         {
             if (filterFunction == null)
             {
                 throw new ArgumentNullException(nameof(filterFunction));
             }
 
-            return new FilterBuilder()
+            return new FilterBuilder<TBody>()
             {
                 FilterFunction = filterFunction,
                 Builder = builder,
@@ -48,7 +48,7 @@ namespace TikuNchik.Core
             };
         }
 
-        public FilterBuilder AddStepToExecute (IStep step)
+        public FilterBuilder<TBody> AddStepToExecute (IStep step)
         {
             if (step == null)
             {
@@ -59,7 +59,7 @@ namespace TikuNchik.Core
             return this;
         }
 
-        public FilterBuilder AddStepToExecute (Action<Integration> actionToExecute)
+        public FilterBuilder<TBody> AddStepToExecute (Action<Integration> actionToExecute)
         {
             if (actionToExecute == null)
             {
@@ -70,7 +70,7 @@ namespace TikuNchik.Core
             return this;
         }
 
-        public IntegrationFlowBuilder EndFilter()
+        public IntegrationFlowBuilder<TBody> EndFilter()
         {
             this.SourceFlow.AddStep(new FilterStep(this.FilterFunction, this.StepsToExecute));
             return this.Builder;

@@ -30,12 +30,12 @@ namespace TikuNchik
                     .AddExceptionHandler<InvalidOperationException>((exc, integration) => false)
                 .EndExceptionHandler()
 
-                .Filter(x => x.Id != null)
+                .Filter((integration) => integration.Id != null)
                     .AddStepToExecute((x) => { })
                 .EndFilter()
                 
                 .Choice()
-                    .When(x => x.Id != null)
+                    .When(x =>  x.Id != null)
                         .AddChoiceStep((x) =>
                         {
                             System.Console.WriteLine("AAAAA");

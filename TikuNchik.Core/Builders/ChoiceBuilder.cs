@@ -5,9 +5,9 @@ using TikuNchik.Core.Steps;
 
 namespace TikuNchik.Core.Builders
 {
-    public class ChoiceBuilder
+    public class ChoiceBuilder<TBody>
     {
-        private ChoiceBuilder(IBuildableFlow sourceFlow, IntegrationFlowBuilder builder)
+        private ChoiceBuilder(IBuildableFlow sourceFlow, IntegrationFlowBuilder<TBody> builder)
         {
             this.SourceFlow = sourceFlow;
             this.Builder = builder;
@@ -19,7 +19,7 @@ namespace TikuNchik.Core.Builders
             get; set;
         }
 
-        private IntegrationFlowBuilder Builder
+        private IntegrationFlowBuilder<TBody> Builder
         {
             get; set;
         }
@@ -44,14 +44,14 @@ namespace TikuNchik.Core.Builders
             this.DefaultHandler = step;
         }
 
-        public static ChoiceBuilder Choice(IBuildableFlow sourceFlow, IntegrationFlowBuilder builder)
+        public static ChoiceBuilder<TBody> Choice(IBuildableFlow sourceFlow, IntegrationFlowBuilder<TBody> builder)
         {
-            return new ChoiceBuilder(sourceFlow, builder);
+            return new ChoiceBuilder<TBody>(sourceFlow, builder);
         }
 
-        public ChoiceStepBuilder When (Func<Integration, bool> matcher)
+        public ChoiceStepBuilder<TBody> When (Func<Integration, bool> matcher)
         {
-            return new ChoiceStepBuilder(this.SourceFlow, this, matcher);
+            return new ChoiceStepBuilder<TBody>(this.SourceFlow, this, matcher);
         }
 
         /// <summary>
@@ -59,12 +59,12 @@ namespace TikuNchik.Core.Builders
         /// ones are triggered
         /// </summary>
         /// <returns></returns>
-        public DefaultStepBuilder Default ()
+        public DefaultStepBuilder<TBody> Default ()
         {
-            return new DefaultStepBuilder(this.SourceFlow, this, (x) => true);
+            return new DefaultStepBuilder<TBody>(this.SourceFlow, this, (x) => true);
         }
 
-        public IntegrationFlowBuilder EndChoice()
+        public IntegrationFlowBuilder<TBody> EndChoice()
         {
             this.SourceFlow.AddStep(StepBuilderHelpers.FromLambda(async (x) => 
             {

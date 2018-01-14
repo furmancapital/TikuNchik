@@ -5,7 +5,7 @@ using TikuNchik.Core.Steps;
 
 namespace TikuNchik.Core.Builders
 {
-    public abstract class BaseChoiceStepBuilder
+    public abstract class BaseChoiceStepBuilder<TBody>
     {
         protected List<IStep> StepsToExecute
         {
@@ -17,14 +17,14 @@ namespace TikuNchik.Core.Builders
             get; set;
         }
 
-        protected ChoiceBuilder Builder
+        protected ChoiceBuilder<TBody> Builder
         {
             get; set;
         }
 
         protected Func<Integration, bool> Matcher { get; }
 
-        protected BaseChoiceStepBuilder(IBuildableFlow sourceFlow, ChoiceBuilder builder, Func<Integration, bool> matcher)
+        protected BaseChoiceStepBuilder(IBuildableFlow sourceFlow, ChoiceBuilder<TBody> builder, Func<Integration, bool> matcher)
         {
             this.SourceFlow = sourceFlow ?? throw new ArgumentNullException(nameof(sourceFlow));
             this.Builder = builder ?? throw new ArgumentNullException(nameof(builder));
@@ -41,6 +41,6 @@ namespace TikuNchik.Core.Builders
             this.StepsToExecute.Add(StepBuilderHelpers.FromLambda(action));
         }
 
-        protected abstract ChoiceBuilder EndChoiceAction();
+        protected abstract ChoiceBuilder<TBody> EndChoiceAction();
     }
 }

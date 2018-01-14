@@ -22,6 +22,27 @@ namespace TikuNchik.Core
             return new ExceptionHandlerBuilder<TBody>(this.CreatedFlow, this, this.DependencyInjection);
         }
 
+        public FilterBuilder<TBody> Filter(Func<Integration, bool> filter)
+        {
+            return FilterBuilder<TBody>.Filter(filter, this.CreatedFlow, this);
+        }
+
+        public ChoiceBuilder<TBody> Choice()
+        {
+            return ChoiceBuilder<TBody>.Choice(this.CreatedFlow, this);
+        }
+
+        public IntegrationFlowBuilder<TBody> WireTap()
+        {
+            return WireTapBuilder.WireTap(this.CreatedFlow, this, this.DependencyInjection);
+        }
+
+
+        public IntegrationFlowBuilder<TBody> Log(Action<Integration, ILogger> actionToPerform)
+        {
+            return LogStepBuilder.Log(this.CreatedFlow, this, actionToPerform, this.DependencyInjection);
+        }
+
         private static IntegrationFlowBuilder<TBodyType> FromExisting<TBodyType>(IntegrationFlowBuilder sourceBuilder)
         {
             return new IntegrationFlowBuilder<TBodyType>()
@@ -68,26 +89,9 @@ namespace TikuNchik.Core
         {
             this.CreatedFlow = new Flow();
         }
+        
 
-        public ChoiceBuilder Choice()
-        {
-            return ChoiceBuilder.Choice(this.CreatedFlow, this);
-        }
 
-        public FilterBuilder Filter(Func<Integration, bool> filter)
-        {
-            return FilterBuilder.Filter(filter, this.CreatedFlow, this);
-        }
-
-        public IntegrationFlowBuilder WireTap()
-        {
-            return WireTapBuilder.WireTap(this.CreatedFlow, this, this.DependencyInjection);
-        }
-
-        public IntegrationFlowBuilder Log(Action<Integration, ILogger> actionToPerform)
-        {
-            return LogStepBuilder.Log(this.CreatedFlow, this, actionToPerform, this.DependencyInjection);
-        }
 
         
 

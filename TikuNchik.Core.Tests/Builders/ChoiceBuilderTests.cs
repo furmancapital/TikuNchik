@@ -16,7 +16,7 @@ namespace TikuNchik.Core.Builders
             get;set;
         }
 
-        private IntegrationFlowBuilder FlowBuilder
+        private IntegrationFlowBuilder<string> FlowBuilder
         {
             get;set;
         }
