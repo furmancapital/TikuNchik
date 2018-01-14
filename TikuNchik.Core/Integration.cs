@@ -35,7 +35,7 @@ namespace TikuNchik.Core
             this.InternalHeaders[header] = headerValue;
         }
 
-        public dynamic Body
+        public object Body
         {
             get;set;
         }

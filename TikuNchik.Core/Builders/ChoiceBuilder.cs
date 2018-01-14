@@ -73,14 +73,14 @@ namespace TikuNchik.Core.Builders
                 {
                     if (step.Key(x))
                     {
-                        await step.Value.PerformStepExecutionAync(x);
+                        await step.Value.PerformStepExecutionAsync(x);
                         break;
                     }
                 }
 
                 if (defaultStep != null)
                 {
-                    await defaultStep.PerformStepExecutionAync(x);
+                    await defaultStep.PerformStepExecutionAsync(x);
                 }
             }));
             return this.Builder;

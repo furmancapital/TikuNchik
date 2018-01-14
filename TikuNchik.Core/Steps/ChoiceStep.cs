@@ -9,7 +9,7 @@ namespace TikuNchik.Core.Steps
     /// This step is used to provide the ability to specify individual criteria for a series of steps 
     /// and indicate which one will be called
     /// </summary>
-    public class ChoiceStep : Step
+    public class ChoiceStep : IStep
     {
         public ChoiceStep (IEnumerable<KeyValuePair<Func<Integration, bool>, IStep>> criteria)
         {
@@ -18,13 +18,13 @@ namespace TikuNchik.Core.Steps
 
         public IEnumerable<KeyValuePair<Func<Integration, bool>, IStep>> Criteria { get; }
 
-        public override async Task PerformStepExecutionAync(Integration integration)
+        public async Task PerformStepExecutionAsync(Integration integration)
         {
             foreach (var criteria in this.Criteria)
             {
                 if (criteria.Key(integration))
                 {
-                    await criteria.Value.PerformStepExecutionAync(integration);
+                    await criteria.Value.PerformStepExecutionAsync(integration);
                     break;
                 }
             }

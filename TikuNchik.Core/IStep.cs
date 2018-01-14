@@ -7,6 +7,14 @@ namespace TikuNchik.Core
 {
     public interface IStep
     {
-        Task PerformStepExecutionAync(Integration integration);
+        Task PerformStepExecutionAsync(Integration integration);
     }
+
+    public interface IStep<TBody> : IStep
+    {
+        Task PerformStepExecutionAsync(Integration integration, TBody message);
+    }
+
+
+
 }

@@ -10,7 +10,7 @@ namespace TikuNchik.Core.Steps
     /// This step is used to execute asynchronous "wire-tapping" of received messages. This is extremelly useful
     /// for finding bugs in production.
     /// </summary>
-    public class WireTapStep : Step
+    public class WireTapStep : IStep
     {
         public WireTapStep (ILogger<WireTapStep> logger)
         {
@@ -19,7 +19,7 @@ namespace TikuNchik.Core.Steps
 
         public ILogger<WireTapStep> Logger { get; }
 
-        public override Task PerformStepExecutionAync(Integration integration)
+        public Task PerformStepExecutionAsync(Integration integration)
         {
             return Task.Run(() =>
             {

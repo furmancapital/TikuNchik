@@ -17,11 +17,11 @@ namespace TikuNchik.Core.Steps
 
         public IEnumerable<IStep> Steps { get; }
 
-        public async Task PerformStepExecutionAync(Integration integration)
+        public async Task PerformStepExecutionAsync(Integration integration)
         {
             foreach (var step in this.Steps)
             {
-                await step.PerformStepExecutionAync(integration);
+                await step.PerformStepExecutionAsync(integration);
             }
         }
     }

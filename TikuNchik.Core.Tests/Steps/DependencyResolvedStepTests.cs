@@ -52,7 +52,7 @@ namespace TikuNchik.Core.Steps
             {
                 x.DoSomething();
             })
-            .PerformStepExecutionAync(this.CreateIntegration())
+            .PerformStepExecutionAsync(this.CreateIntegration())
             .Wait();
 
             this.MockDependency.VerifyAll();

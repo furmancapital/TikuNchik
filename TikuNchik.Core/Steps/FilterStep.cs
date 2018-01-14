@@ -35,13 +35,13 @@ namespace TikuNchik.Core.Steps
         public IEnumerable<IStep> StepsToExecute { get; }
         public Func<Integration, bool> FilterToApply { get; }
 
-        public async Task PerformStepExecutionAync(Integration integration)
+        public async Task PerformStepExecutionAsync(Integration integration)
         {
             if (this.FilterToApply(integration))
             {
                 foreach (var stepToExecute in this.StepsToExecute)
                 {
-                    await stepToExecute.PerformStepExecutionAync(integration);
+                    await stepToExecute.PerformStepExecutionAsync(integration);
                 }
             }
             else

@@ -42,7 +42,7 @@ namespace TikuNchik.Core.Steps
 
             var step = this.GetAnotherFlowStep();
 
-            step.PerformStepExecutionAync(this.CreateIntegration()).Wait();
+            step.PerformStepExecutionAsync(this.CreateIntegration()).Wait();
 
             this.TargetFlow.VerifyAll();
         }

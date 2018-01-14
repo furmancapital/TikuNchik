@@ -40,7 +40,7 @@ namespace TikuNchik.Core.Steps
         [Fact]
         public void PerformStepExecutionAync_Match_Should_Trigger_Execution()
         {
-            this.Step1.Setup(x => x.PerformStepExecutionAync(It.IsAny<Integration>()))
+            this.Step1.Setup(x => x.PerformStepExecutionAsync(It.IsAny<Integration>()))
                 .Returns(Task.FromResult(0));
 
             Func<Integration, bool> lambda = (x) => true;
@@ -50,7 +50,7 @@ namespace TikuNchik.Core.Steps
                 new KeyValuePair<Func<Integration, bool>, IStep>(lambda, this.Step1.Object)
             });
 
-            choiceStep.PerformStepExecutionAync(this.CreateIntegration()).Wait();
+            choiceStep.PerformStepExecutionAsync(this.CreateIntegration()).Wait();
 
             this.Step1.VerifyAll();
         }
@@ -58,7 +58,7 @@ namespace TikuNchik.Core.Steps
         [Fact]
         public void PerformStepExecutionAync_Match_Should_Trigger_Execution_If_Not_First_Item()
         {
-            this.Step2.Setup(x => x.PerformStepExecutionAync(It.IsAny<Integration>()))
+            this.Step2.Setup(x => x.PerformStepExecutionAsync(It.IsAny<Integration>()))
                 .Returns(Task.FromResult(0));
 
             Func<Integration, bool> lambda1 = (x) => false;
@@ -70,7 +70,7 @@ namespace TikuNchik.Core.Steps
                 new KeyValuePair<Func<Integration, bool>, IStep>(lambda2, this.Step2.Object)
             });
 
-            choiceStep.PerformStepExecutionAync(this.CreateIntegration()).Wait();
+            choiceStep.PerformStepExecutionAsync(this.CreateIntegration()).Wait();
 
             this.Step2.VerifyAll();
         }
@@ -89,10 +89,10 @@ namespace TikuNchik.Core.Steps
                 new KeyValuePair<Func<Integration, bool>, IStep>(lambda, this.Step2.Object)
             });
 
-            choiceStep.PerformStepExecutionAync(this.CreateIntegration()).Wait();
+            choiceStep.PerformStepExecutionAsync(this.CreateIntegration()).Wait();
 
-            this.Step1.Verify(x => x.PerformStepExecutionAync(It.IsAny<Integration>()), Times.Never());
-            this.Step2.Verify(x => x.PerformStepExecutionAync(It.IsAny<Integration>()), Times.Never());
+            this.Step1.Verify(x => x.PerformStepExecutionAsync(It.IsAny<Integration>()), Times.Never());
+            this.Step2.Verify(x => x.PerformStepExecutionAsync(It.IsAny<Integration>()), Times.Never());
 
         }
     }

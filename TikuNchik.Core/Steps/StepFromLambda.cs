@@ -17,7 +17,7 @@ namespace TikuNchik.Core.Steps
 
         public Action<Integration> Action { get; }
 
-        public async Task PerformStepExecutionAync(Integration integration)
+        public async Task PerformStepExecutionAsync(Integration integration)
         {
             var asyncFuncExecution = new Func<Task>(() =>
             {

@@ -12,6 +12,7 @@ namespace TikuNchik
     {
         static async Task Main(string[] args)
         {
+
             Console.WriteLine("Hello World!");
 
             var serviceCollection = new ServiceCollection()
@@ -21,22 +22,15 @@ namespace TikuNchik
                 })
                 .BuildServiceProvider();
 
-            var factory = serviceCollection.GetRequiredService<ILoggerFactory>();
-
             var flow = IntegrationFlowBuilder
                 .Create(serviceCollection)
-                
+
                 .ExceptionHandler()
                     .AddExceptionHandler<InvalidOperationException>((x) => false)
                 .EndExceptionHandler()
 
-                .WireTap()
-
                 .Filter(x => x.Id != null)
-                    .AddStepToExecute((x) =>
-                    {
-                        System.Console.WriteLine(x);
-                    })
+                    .AddStepToExecute((x) => { })
                 .EndFilter()
                 
                 .Choice()
@@ -53,7 +47,7 @@ namespace TikuNchik
                         })
                      .EndDefault()
                 .EndChoice()
-                
+                .WireTap()
                 .Log((x, y) => y.LogInformation("This is only a test!"))
                 .Build();
 
