@@ -24,7 +24,7 @@ namespace TikuNchik.Core.Builders
         public ChoiceBuilderTests()
         {
             this.ServiceProvider = new Mock<IServiceProvider>();
-            this.FlowBuilder = IntegrationFlowBuilder.Create(this.ServiceProvider.Object);
+            this.FlowBuilder = IntegrationFlowBuilder.Create<string>(this.ServiceProvider.Object);
         }
 
         private Integration CreateIntegration()

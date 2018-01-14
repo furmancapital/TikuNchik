@@ -23,12 +23,11 @@ namespace TikuNchik
                 .BuildServiceProvider();
 
             var flow = IntegrationFlowBuilder
-                .Create(serviceCollection)
-
-                .Translate<int, string>((x) => "1")
+                .Create<int>(serviceCollection)
+                .Translate((x) => "A")
 
                 .ExceptionHandler()
-                    .AddExceptionHandler<InvalidOperationException>((x) => false)
+                    .AddExceptionHandler<InvalidOperationException>((exc, integration) => false)
                 .EndExceptionHandler()
 
                 .Filter(x => x.Id != null)

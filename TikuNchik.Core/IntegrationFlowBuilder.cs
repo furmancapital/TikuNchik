@@ -8,38 +8,63 @@ using TikuNchik.Core.Steps;
 
 namespace TikuNchik.Core
 {
+    public class IntegrationFlowBuilder<TBody> : IntegrationFlowBuilder
+    {
+        public IntegrationFlowBuilder<TTo> Translate<TTo>(Func<TBody, TTo> translator)
+        {
+            return FromExisting<TTo>(TranslatorStepBuilder<TBody, TTo>
+                .Translate(translator, this.CreatedFlow, this));
+        }
+
+
+        public ExceptionHandlerBuilder<TBody> ExceptionHandler()
+        {
+            return new ExceptionHandlerBuilder<TBody>(this.CreatedFlow, this, this.DependencyInjection);
+        }
+
+        private static IntegrationFlowBuilder<TBodyType> FromExisting<TBodyType>(IntegrationFlowBuilder sourceBuilder)
+        {
+            return new IntegrationFlowBuilder<TBodyType>()
+            {
+                CreatedFlow = sourceBuilder.CreatedFlow
+            };
+        }
+    }
+
+
     public class IntegrationFlowBuilder
     {
-        private Flow CreatedFlow
+        public Flow CreatedFlow
         {
             get;set;
         }
 
-        private ILoggerFactory LoggerFactory
+        protected ILoggerFactory LoggerFactory
         {
             get;
             set;
         }
 
-        private IServiceProvider DependencyInjection
+        protected IServiceProvider DependencyInjection
         {
             get;set;
         }
 
-        public static IntegrationFlowBuilder Create(IServiceProvider dependencyInjection)
+        public static IntegrationFlowBuilder<TBodyType> Create<TBodyType>(IServiceProvider dependencyInjection)
         {
             if (dependencyInjection == null)
             {
                 throw new ArgumentNullException(nameof(dependencyInjection));
             }
 
-            return new IntegrationFlowBuilder()
+            return new IntegrationFlowBuilder<TBodyType>()
             {
                 DependencyInjection = dependencyInjection
             };
         }
 
-        private IntegrationFlowBuilder()
+
+        public IntegrationFlowBuilder()
         {
             this.CreatedFlow = new Flow();
         }
@@ -64,15 +89,7 @@ namespace TikuNchik.Core
             return LogStepBuilder.Log(this.CreatedFlow, this, actionToPerform, this.DependencyInjection);
         }
 
-        public ExceptionHandlerBuilder ExceptionHandler()
-        {
-            return new ExceptionHandlerBuilder(this.CreatedFlow, this, this.DependencyInjection);
-        }
-
-        public IntegrationFlowBuilder Translate<TFrom, TTo>(Func<TFrom, TTo> translator)
-        {
-            return TranslatorStepBuilder<TFrom, TTo>.Translate(translator, this.CreatedFlow, this);
-        }
+        
 
         /// <summary>
         /// Creates a step that will trigger the resolution of the target dependency on each call

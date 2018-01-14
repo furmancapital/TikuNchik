@@ -7,7 +7,7 @@ using TikuNchik.Core.Exceptions;
 
 namespace TikuNchik.Core.Builders
 {
-    public class ExceptionHandlerBuilder
+    public class ExceptionHandlerBuilder<TBody>
     {
         public ExceptionHandler ExceptionHander
         {
@@ -20,13 +20,13 @@ namespace TikuNchik.Core.Builders
             get; set;
         }
 
-        private IntegrationFlowBuilder Builder
+        private IntegrationFlowBuilder<TBody> Builder
         {
             get; set;
         }
         public IServiceProvider ServiceProvider { get; }
 
-        public ExceptionHandlerBuilder(IBuildableFlow sourceFlow, IntegrationFlowBuilder builder, IServiceProvider serviceProvider)
+        public ExceptionHandlerBuilder(IBuildableFlow sourceFlow, IntegrationFlowBuilder<TBody> builder, IServiceProvider serviceProvider)
         {
             this.SourceFlow = sourceFlow ?? throw new ArgumentNullException(nameof(sourceFlow));
             this.Builder = builder ?? throw new ArgumentNullException(nameof(builder));
@@ -34,7 +34,7 @@ namespace TikuNchik.Core.Builders
             this.ExceptionHander = new ExceptionHandler(this.ServiceProvider.GetRequiredService<ILogger<ExceptionHandler>>());
         }
 
-        public ExceptionHandlerBuilder AddExceptionHandler<TException>(Func<Exception, bool> handlerToAdd)
+        public ExceptionHandlerBuilder<TBody> AddExceptionHandler<TException>(Func<Exception, Integration, bool> handlerToAdd)
             where TException : Exception
         {
             this.ExceptionHander.AddExceptionHandler<TException>(handlerToAdd);
@@ -46,10 +46,10 @@ namespace TikuNchik.Core.Builders
         /// </summary>
         /// <typeparam name="TException"></typeparam>
         /// <returns></returns>
-        public ExceptionHandlerBuilder AddExceptionHandlerIgnoreException<TException>()
+        public ExceptionHandlerBuilder<TBody> AddExceptionHandlerIgnoreException<TException>()
             where TException : Exception
         {
-            this.AddExceptionHandler<TException>((x) => true);
+            this.AddExceptionHandler<TException>((exception, body) => true);
             return this;
         }
 
@@ -58,14 +58,14 @@ namespace TikuNchik.Core.Builders
         /// </summary>
         /// <typeparam name="TException"></typeparam>
         /// <returns></returns>
-        public ExceptionHandlerBuilder AddExceptionHandlerUnhandledException<TException>()
+        public ExceptionHandlerBuilder<TBody> AddExceptionHandlerUnhandledException<TException>()
             where TException : Exception
         {
-            this.AddExceptionHandler<TException>((x) => false);
+            this.AddExceptionHandler<TException>((exception, body) => false);
             return this;
         }
 
-        public IntegrationFlowBuilder EndExceptionHandler()
+        public IntegrationFlowBuilder<TBody> EndExceptionHandler()
         {
             this.SourceFlow.AddExceptionHandler(this.ExceptionHander);
             return this.Builder;

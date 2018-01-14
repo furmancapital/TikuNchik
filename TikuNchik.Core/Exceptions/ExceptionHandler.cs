@@ -14,15 +14,15 @@ namespace TikuNchik.Core.Exceptions
     {
         public static readonly Type RootExceptionType = typeof(Exception);
 
-        private Func<Exception, bool> RootExceptionHandler
+        private Func<Exception, Integration, bool> RootExceptionHandler
         {
             get;set;
         }
 
-        private  IDictionary<Type, Func<Exception, bool>> Handlers
+        private  IDictionary<Type, Func<Exception, Integration, bool>> Handlers
         {
             get; set;
-        } = new Dictionary<Type, Func<Exception, bool>>();
+        } = new Dictionary<Type, Func<Exception, Integration, bool>>();
 
         public ExceptionHandler (ILogger logger)
         {
@@ -38,7 +38,7 @@ namespace TikuNchik.Core.Exceptions
         /// </summary>
         /// <typeparam name="TExceptionType"></typeparam>
         /// <param name="handler"></param>
-        public void AddExceptionHandler<TExceptionType>(Func<Exception, bool> handler)
+        public void AddExceptionHandler<TExceptionType>(Func<Exception, Integration, bool> handler)
             where TExceptionType : Exception
         {
             if (handler == null)
@@ -59,10 +59,10 @@ namespace TikuNchik.Core.Exceptions
 
         public ILogger Logger { get; }
 
-        private async Task AttemptToHandleException (Exception ex)
+        private async Task AttemptToHandleException (Exception ex, Integration sourceIntegration)
         {
             var exceptionType = ex.GetType();
-            Func<Exception, bool> handler;
+            Func<Exception, Integration, bool> handler;
             if (!this.Handlers.TryGetValue(exceptionType, out handler))
             {
                 if (this.RootExceptionHandler != null)
@@ -77,7 +77,7 @@ namespace TikuNchik.Core.Exceptions
                 }
             }
 
-            if (!await Task.FromResult(handler(ex)))
+            if (!await Task.FromResult(handler(ex, sourceIntegration)))
             {
                 var message = $"Custom exception handler for {exceptionType} indicated that it should not handle the exception";
                 Logger.LogDebug(message);
@@ -85,9 +85,9 @@ namespace TikuNchik.Core.Exceptions
             }
         }
 
-        public async Task HandleAsync<TException>(TException ex) where TException : Exception
+        public async Task HandleAsync<TException>(TException ex, Integration sourceIntegration) where TException : Exception
         {
-            await AttemptToHandleException(ex);
+            await AttemptToHandleException(ex, sourceIntegration);
         }
     }
 }

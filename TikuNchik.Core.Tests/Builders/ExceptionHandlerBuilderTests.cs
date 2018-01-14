@@ -28,14 +28,19 @@ namespace TikuNchik.Core.Builders
             get;set;
         }
 
-        private IntegrationFlowBuilder GetFlowBuilder()
+        private IntegrationFlowBuilder<string> GetFlowBuilder()
         {
-            return IntegrationFlowBuilder.Create(this.Provider.Object);
+            return new IntegrationFlowBuilder<string>();
         }
 
-        ExceptionHandlerBuilder GetExceptionHandlerBuilder()
+        ExceptionHandlerBuilder<string> GetExceptionHandlerBuilder()
         {
-            return new ExceptionHandlerBuilder(this.BuildableFlow.Object, this.GetFlowBuilder(), this.Provider.Object);
+            return new ExceptionHandlerBuilder<string>(this.BuildableFlow.Object, this.GetFlowBuilder(), this.Provider.Object);
+        }
+
+        private Integration CreateIntegration()
+        {
+            return new Integration();
         }
 
         public ExceptionHandlerBuilderTests()
@@ -51,22 +56,24 @@ namespace TikuNchik.Core.Builders
         [Fact]
         public void AddExceptionHandlerIgnoreException_Verify_Exception_Should_Be_Ignored()
         {
+            var integration = this.CreateIntegration();
             var builder = this.GetExceptionHandlerBuilder();
             builder.AddExceptionHandlerIgnoreException<InvalidOperationException>();
 
-            builder.ExceptionHander.HandleAsync(new InvalidOperationException()).Wait();
+            builder.ExceptionHander.HandleAsync(new InvalidOperationException(), integration).Wait();
         }
 
 
         [Fact]
         public void AddExceptionHandlerUnhandledException_Verify_Exception_Not_Ignored()
         {
+            var integration = this.CreateIntegration();
             var builder = this.GetExceptionHandlerBuilder();
             builder.AddExceptionHandlerUnhandledException<InvalidOperationException>();
 
             Assert.Throws<AggregateException>(() =>
             {
-                builder.ExceptionHander.HandleAsync(new InvalidOperationException()).Wait();
+                builder.ExceptionHander.HandleAsync(new InvalidOperationException(), integration).Wait();
             });
         }
     }

@@ -14,7 +14,8 @@ namespace TikuNchik.Core.Exceptions
         /// Attempts to perform an exception handling
         /// </summary>
         /// <param name="ex"></param>
-        Task HandleAsync<TException>(TException ex)
+        /// <param name="sourceIntegration"></param>
+        Task HandleAsync<TException>(TException ex, Integration sourceIntegration)
             where TException : Exception;
     }
 }

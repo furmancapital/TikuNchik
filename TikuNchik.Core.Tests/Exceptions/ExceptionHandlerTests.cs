@@ -25,6 +25,11 @@ namespace TikuNchik.Core.Exceptions
             return new ExceptionHandler(this.Logger.Object);
         }
 
+        private Integration CreateIntegration()
+        {
+            return new Integration();
+        }
+
         [Fact]
         public void HandleException_If_Exception_Unhandled_DueToNoHandlers_Throw_Exception()
         {
@@ -32,7 +37,7 @@ namespace TikuNchik.Core.Exceptions
 
             var exception = Assert.Throws<AggregateException>(() =>
             {
-                handler.HandleAsync(new InvalidOperationException()).Wait();
+                handler.HandleAsync(new InvalidOperationException(), this.CreateIntegration()).Wait();
             });
 
         }
@@ -42,11 +47,11 @@ namespace TikuNchik.Core.Exceptions
         {
             var handler = this.GetHandler();
             //different exception being handled than the one the handler will throw
-            handler.AddExceptionHandler<FieldAccessException>((x) => true);
+            handler.AddExceptionHandler<FieldAccessException>((x,y) => true);
 
             var exception = Assert.Throws<AggregateException>(() =>
             {
-                handler.HandleAsync(new InvalidOperationException()).Wait();
+                handler.HandleAsync(new InvalidOperationException(), this.CreateIntegration()).Wait();
             });
 
             Assert.Equal("No Configured Exception Handler found for System.InvalidOperationException", exception.InnerException.Message);
@@ -58,11 +63,11 @@ namespace TikuNchik.Core.Exceptions
         public void PerformStepExecutionAync_If_Exception_Unhandled_DueToHandlerReturningFalse_Throw_Exception()
         {
             var handler = this.GetHandler();
-            handler.AddExceptionHandler<InvalidOperationException>((x) => false);
+            handler.AddExceptionHandler<InvalidOperationException>((x,y) => false);
 
             var exception = Assert.Throws<AggregateException>(() =>
             {
-                handler.HandleAsync(new InvalidOperationException()).Wait();
+                handler.HandleAsync(new InvalidOperationException(), this.CreateIntegration()).Wait();
             });
 
             Assert.Equal("Custom exception handler for System.InvalidOperationException indicated that it should not handle the exception", exception.InnerException.Message);
@@ -74,9 +79,9 @@ namespace TikuNchik.Core.Exceptions
         public void PerformStepExecutionAync_If_Exception_Handled_DoNotThrow_Exception()
         {
             var handler = this.GetHandler();
-            handler.AddExceptionHandler<InvalidOperationException>((x) => true);
+            handler.AddExceptionHandler<InvalidOperationException>((x,y) => true);
 
-            handler.HandleAsync(new InvalidOperationException()).Wait();
+            handler.HandleAsync(new InvalidOperationException(), this.CreateIntegration()).Wait();
 
         }
 
@@ -89,9 +94,9 @@ namespace TikuNchik.Core.Exceptions
         public void PerformStepExecutionAync_If_Exception_Of_TypeException_Registered_Should_Correctly_Catch_SUbClasses_If_TheyDoNotHaveHandlers()
         {
             var handler = this.GetHandler();
-            handler.AddExceptionHandler<Exception>((x) => true);
+            handler.AddExceptionHandler<Exception>((x,y) => true);
 
-            handler.HandleAsync(new InvalidOperationException()).Wait();
+            handler.HandleAsync(new InvalidOperationException(), this.CreateIntegration()).Wait();
 
         }
 
@@ -104,10 +109,10 @@ namespace TikuNchik.Core.Exceptions
         public void PerformStepExecutionAync_If_Exception_Combined_With_Specific_Handlers_Verify_SpecificHandler_Properly_Used_To_HandleException()
         {
             var handler = this.GetHandler();
-            handler.AddExceptionHandler<Exception>((x) => false);
-            handler.AddExceptionHandler<InvalidOperationException>((x) => true);
+            handler.AddExceptionHandler<Exception>((x,y) => false);
+            handler.AddExceptionHandler<InvalidOperationException>((x,y) => true);
 
-            handler.HandleAsync(new InvalidOperationException()).Wait();
+            handler.HandleAsync(new InvalidOperationException(), this.CreateIntegration()).Wait();
 
         }
     }
