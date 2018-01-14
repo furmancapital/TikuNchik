@@ -10,14 +10,14 @@ namespace TikuNchik.Core
     {
         protected Step()
         {
-            var conversionFunc = new Func<object, TBody>((x) => (TBody)x);
+            this.ConversionRoute = new Func<object, TBody>((x) => (TBody)x);
         }
 
         public abstract Task PerformStepExecutionAsync(Integration integration, TBody message);
 
-        public Task PerformStepExecutionAsync(Integration integration)
+        public virtual async Task PerformStepExecutionAsync(Integration integration)
         {
-            return PerformStepExecutionAsync(integration, ConversionRoute(integration.Body));
+            await PerformStepExecutionAsync(integration, ConversionRoute(integration.Body));
         }
 
         Func<object, TBody> ConversionRoute
@@ -26,4 +26,5 @@ namespace TikuNchik.Core
             set;
         }
     }
+
 }

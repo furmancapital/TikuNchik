@@ -31,6 +31,8 @@ namespace TikuNchik.Core
         public async Task<Integration> CreateIntegration<T>(T sourceMessage)
         {
             var integration = new Integration();
+            integration.Body = sourceMessage;
+
             foreach (var step in this.Steps)
             {
                 await step.PerformStepExecutionAsync(integration);

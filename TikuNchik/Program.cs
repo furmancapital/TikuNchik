@@ -25,6 +25,8 @@ namespace TikuNchik
             var flow = IntegrationFlowBuilder
                 .Create(serviceCollection)
 
+                .Translate<int, string>((x) => "1")
+
                 .ExceptionHandler()
                     .AddExceptionHandler<InvalidOperationException>((x) => false)
                 .EndExceptionHandler()
@@ -51,7 +53,7 @@ namespace TikuNchik
                 .Log((x, y) => y.LogInformation("This is only a test!"))
                 .Build();
 
-            var result = await flow.CreateIntegration<string>("ABC");
+            var result = await flow.CreateIntegration<int>(1);
             if (result == null)
             {
 

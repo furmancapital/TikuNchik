@@ -10,7 +10,7 @@ namespace TikuNchik.Core.Steps
     /// </summary>
     /// <typeparam name="TBody"></typeparam>
     /// <typeparam name="TTo"></typeparam>
-    public class TranslatorStep<TBody, TTo> : Step<TBody>
+    public class TranslatorStep<TBody, TTo> : StepWithResult<TBody, TTo>
     {
         public TranslatorStep (Func<TBody, TTo> conversion)
         {

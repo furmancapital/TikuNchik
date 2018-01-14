@@ -15,6 +15,11 @@ namespace TikuNchik.Core
         Task PerformStepExecutionAsync(Integration integration, TBody message);
     }
 
+    public interface IStep<TBody, TOutput> : IStep<TBody>
+    {
+        Task<TOutput> PerformStepExecutionAsyncWithResult(Integration integration, TBody message);
+    }
+
 
 
 }

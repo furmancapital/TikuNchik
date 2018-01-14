@@ -69,6 +69,11 @@ namespace TikuNchik.Core
             return new ExceptionHandlerBuilder(this.CreatedFlow, this, this.DependencyInjection);
         }
 
+        public IntegrationFlowBuilder Translate<TFrom, TTo>(Func<TFrom, TTo> translator)
+        {
+            return TranslatorStepBuilder<TFrom, TTo>.Translate(translator, this.CreatedFlow, this);
+        }
+
         /// <summary>
         /// Creates a step that will trigger the resolution of the target dependency on each call
         /// </summary>
