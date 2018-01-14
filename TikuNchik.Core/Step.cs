@@ -13,11 +13,11 @@ namespace TikuNchik.Core
             this.ConversionRoute = new Func<object, TBody>((x) => (TBody)x);
         }
 
-        public abstract Task PerformStepExecutionAsync(Integration integration, TBody message);
+        public abstract Task<Integration> PerformStepExecutionAsync(Integration integration, TBody message);
 
-        public virtual async Task PerformStepExecutionAsync(Integration integration)
+        public virtual async Task<Integration> PerformStepExecutionAsync(Integration integration)
         {
-            await PerformStepExecutionAsync(integration, ConversionRoute(integration.Body));
+            return await PerformStepExecutionAsync(integration, ConversionRoute(integration.Body));
         }
 
         Func<object, TBody> ConversionRoute

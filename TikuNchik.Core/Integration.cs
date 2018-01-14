@@ -4,6 +4,37 @@ using System.Collections.Generic;
 
 namespace TikuNchik.Core
 {
+    public class Integration<TBody> : Integration
+    {
+        public TBody Message
+        {
+            get;
+            private set;
+        }
+
+        public Integration (TBody initialBody)
+        {
+            this.Body = initialBody;
+        }
+
+        /// <summary>
+        /// This overload is only used internally to create integrations from existing integrations
+        /// </summary>
+        private Integration()
+        {
+
+        }
+
+        public static Integration<TTarget> SetMessage<TTarget> (TTarget target)
+        {
+            return new Integration<TTarget>()
+            {
+                Message = target
+            };
+        }
+    }
+
+
     public class Integration
     {
         public Guid Id

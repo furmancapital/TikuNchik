@@ -22,11 +22,11 @@ namespace TikuNchik.Core.Steps
         public IServiceProvider ServiceProvider { get; }
         public Action<TItem, Integration> Action { get; }
 
-        public Task PerformStepExecutionAsync(Integration integration)
+        public Task<Integration> PerformStepExecutionAsync(Integration integration)
         {
             var targetDependency = this.ServiceProvider.GetRequiredService<TItem>();
             Action(targetDependency, integration);
-            return Task.FromResult(0);
+            return Task.FromResult(integration);
         }
     }
 }

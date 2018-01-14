@@ -18,10 +18,10 @@ namespace TikuNchik.Core.Steps
         public ILogger<LogStep> Logger { get; }
         public Action<Integration, ILogger<LogStep>> ActionToPerform { get; }
 
-        public Task PerformStepExecutionAsync(Integration integration)
+        public Task<Integration> PerformStepExecutionAsync(Integration integration)
         {
             this.ActionToPerform(integration, this.Logger);
-            return Task.FromResult(0);
+            return Task.FromResult(integration);
         }
     }
 }

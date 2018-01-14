@@ -47,7 +47,8 @@ namespace TikuNchik.Core
         {
             return new IntegrationFlowBuilder<TBodyType>()
             {
-                CreatedFlow = sourceBuilder.CreatedFlow
+                CreatedFlow = sourceBuilder.CreatedFlow,
+                DependencyInjection = sourceBuilder.DependencyInjection
             };
         }
     }
@@ -66,7 +67,7 @@ namespace TikuNchik.Core
             set;
         }
 
-        protected IServiceProvider DependencyInjection
+        public IServiceProvider DependencyInjection
         {
             get;set;
         }

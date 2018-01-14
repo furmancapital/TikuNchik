@@ -7,17 +7,17 @@ namespace TikuNchik.Core
 {
     public interface IStep
     {
-        Task PerformStepExecutionAsync(Integration integration);
+        Task<Integration> PerformStepExecutionAsync(Integration integration);
     }
 
     public interface IStep<TBody> : IStep
     {
-        Task PerformStepExecutionAsync(Integration integration, TBody message);
+        Task<Integration> PerformStepExecutionAsync(Integration integration, TBody message);
     }
 
     public interface IStep<TBody, TOutput> : IStep<TBody>
     {
-        Task<TOutput> PerformStepExecutionAsyncWithResult(Integration integration, TBody message);
+        Task<Integration<TOutput>> PerformStepExecutionAsyncWithResult(Integration integration, TBody message);
     }
 
 

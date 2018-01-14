@@ -31,8 +31,9 @@ namespace TikuNchik.Core.Steps
         public void PerformStepExecutionAsync_Verify_Conversion_Applied_And_Stored_In_Body_Of_Integration()
         {
             var integration = this.CreateIntegration();
-            this.GetTranslatorWithValidConversion().PerformStepExecutionAsync(integration, 23).Wait();
-            Assert.Equal("23", integration.Body);
+            var result = this.GetTranslatorWithValidConversion().PerformStepExecutionAsync(integration, 23);
+            result.Wait();
+            Assert.Equal("23", ((Integration<string>)result.Result).Message);
         }
 
         [Fact]

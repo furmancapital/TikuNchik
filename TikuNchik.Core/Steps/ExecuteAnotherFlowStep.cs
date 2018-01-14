@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace TikuNchik.Core.Steps
 {
-    public class ExecuteAnotherFlowStep : IStep
+    public class ExecuteAnotherFlowStep<TBody> : IStep
     {
         public ExecuteAnotherFlowStep (IFlow targetFlow)
         {
@@ -14,9 +14,11 @@ namespace TikuNchik.Core.Steps
 
         public IFlow TargetFlow { get; }
 
-        public async Task PerformStepExecutionAsync(Integration integration)
+        public Task<Integration> PerformStepExecutionAsync(Integration integration)
         {
-            await this.TargetFlow.ExecuteCurrentIntegration(integration);
+            //TODO: confirm behavior
+            return this.TargetFlow.ExecuteCurrentIntegration((Integration<TBody>)integration);
         }
+
     }
 }

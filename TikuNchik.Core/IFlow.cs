@@ -8,6 +8,6 @@ namespace TikuNchik.Core
     public interface IFlow
     {
         Task<Integration> CreateIntegration<T>(T sourceMessage);
-        Task ExecuteCurrentIntegration(Integration integration);
+        Task<Integration> ExecuteCurrentIntegration<T>(Integration<T> integration);
     }
 }

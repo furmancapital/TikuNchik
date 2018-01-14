@@ -19,11 +19,12 @@ namespace TikuNchik.Core.Steps
 
         public Func<TBody, TTo> Conversion { get; }
 
-        public override Task PerformStepExecutionAsync(Integration integration, TBody message)
+        public override Task<Integration> PerformStepExecutionAsync(Integration integration, TBody message)
         {
             var convertedValue = this.Conversion(message);
-            integration.Body = convertedValue;
-            return Task.FromResult(convertedValue);
+            var generatedIntegration = Integration<TTo>.SetMessage(convertedValue);
+            //TODO: confirm that below works properly
+            return Task.FromResult((Integration)generatedIntegration);
         }
     }
 }

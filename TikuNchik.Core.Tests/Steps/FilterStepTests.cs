@@ -34,20 +34,20 @@ namespace TikuNchik.Core.Steps
             this.TargetStep = new Mock<IStep>();
         }
 
-        private Integration CreateIntegration()
+        private Integration<string> CreateIntegration(string value)
         {
-            return new Integration();
+            return new Integration<string>(value);
         }
 
         [Fact]
         public void PerformStepExecutionAync_If_FilteredOut_DoNotExecute_Step()
         {
             this.TargetStep.Setup(x => x.PerformStepExecutionAsync(It.IsAny<Integration>()))
-                .Returns(Task.FromResult(0));
+                .Returns(Task.FromResult((Integration)this.CreateIntegration("OUT")));
 
             var step = this.GetFilterStepWithoutLambda(((x) => false));
 
-            var integration = CreateIntegration();
+            var integration = CreateIntegration("IN");
             step.PerformStepExecutionAsync(integration).Wait();
 
             this.TargetStep.Verify(x => x.PerformStepExecutionAsync(It.IsAny<Integration>()), Times.Never());
@@ -57,11 +57,11 @@ namespace TikuNchik.Core.Steps
         public void PerformStepExecutionAync_If_FilteredOut_VerifyFlaggedAsSuch()
         {
             this.TargetStep.Setup(x => x.PerformStepExecutionAsync(It.IsAny<Integration>()))
-                .Returns(Task.FromResult(0));
+                .Returns(Task.FromResult((Integration)this.CreateIntegration("OUT")));
 
             var step = this.GetFilterStepWithoutLambda(((x) => false));
 
-            var integration = CreateIntegration();
+            var integration = CreateIntegration("IN");
             step.PerformStepExecutionAsync(integration).Wait();
 
             Assert.True(integration.WasFilteredOut());
@@ -72,11 +72,11 @@ namespace TikuNchik.Core.Steps
         public void PerformStepExecutionAync_If_NotFilteredOut_Execute_Step()
         {
             this.TargetStep.Setup(x => x.PerformStepExecutionAsync(It.IsAny<Integration>()))
-                .Returns(Task.FromResult(0));
+                .Returns(Task.FromResult((Integration)this.CreateIntegration("OUT")));
 
             var step = this.GetFilterStepWithoutLambda(((x) => true));
 
-            var integration = CreateIntegration();
+            var integration = CreateIntegration("IN");
             step.PerformStepExecutionAsync(integration).Wait();
 
             this.TargetStep.VerifyAll();
@@ -87,11 +87,11 @@ namespace TikuNchik.Core.Steps
         public void PerformStepExecutionAync_If_NotFilteredOut_VerifyNotFlaggedAsFilteredOut()
         {
             this.TargetStep.Setup(x => x.PerformStepExecutionAsync(It.IsAny<Integration>()))
-                .Returns(Task.FromResult(0));
+                .Returns(Task.FromResult((Integration)this.CreateIntegration("OUT")));
 
             var step = this.GetFilterStepWithoutLambda(((x) => true));
 
-            var integration = CreateIntegration();
+            var integration = CreateIntegration("IN");
             step.PerformStepExecutionAsync(integration).Wait();
 
             Assert.False(integration.WasFilteredOut());
@@ -105,11 +105,11 @@ namespace TikuNchik.Core.Steps
             {
 
                 this.TargetStep.Setup(x => x.PerformStepExecutionAsync(It.IsAny<Integration>()))
-                    .Returns(Task.FromResult(0));
+                .Returns(Task.FromResult((Integration)this.CreateIntegration("OUT")));
 
                 var step = this.GetFilterStepWithLambda(((x) => false), (x) => lambdaCalled.Set());
 
-                var integration = CreateIntegration();
+                var integration = CreateIntegration("IN");
                 step.PerformStepExecutionAsync(integration).Wait();
 
                 Assert.False(lambdaCalled.Wait(TimeSpan.FromSeconds(0)), "SHould not trigger action lambda when filtered out");
@@ -124,11 +124,11 @@ namespace TikuNchik.Core.Steps
             {
 
                 this.TargetStep.Setup(x => x.PerformStepExecutionAsync(It.IsAny<Integration>()))
-                    .Returns(Task.FromResult(0));
+                .Returns(Task.FromResult((Integration)this.CreateIntegration("OUT")));
 
                 var step = this.GetFilterStepWithLambda(((x) => true), (x) => lambdaCalled.Set());
 
-                var integration = CreateIntegration();
+                var integration = CreateIntegration("IN");
                 step.PerformStepExecutionAsync(integration).Wait();
 
                 Assert.True(lambdaCalled.Wait(TimeSpan.FromSeconds(0)), "Should trigger action lambda when NOT filtered out");

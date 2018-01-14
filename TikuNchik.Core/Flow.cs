@@ -30,23 +30,26 @@ namespace TikuNchik.Core
 
         public async Task<Integration> CreateIntegration<T>(T sourceMessage)
         {
-            var integration = new Integration();
-            integration.Body = sourceMessage;
+            var integration = new Integration<T>(sourceMessage);
 
+            Integration currentIntegration = integration;
             foreach (var step in this.Steps)
             {
-                await step.PerformStepExecutionAsync(integration);
+                var integrationResult = await step.PerformStepExecutionAsync(currentIntegration);
+                currentIntegration = integrationResult;
             }
 
-            return integration;
+            return currentIntegration;
         }
 
-        public async Task ExecuteCurrentIntegration(Integration integration)
+        public async Task<Integration> ExecuteCurrentIntegration<T>(Integration<T> integration)
         {
+            Integration currentIntegration = integration;
             foreach (var step in this.Steps)
             {
-                await step.PerformStepExecutionAsync(integration);
+                currentIntegration = await step.PerformStepExecutionAsync(currentIntegration);
             }
+            return currentIntegration;
 
         }
 

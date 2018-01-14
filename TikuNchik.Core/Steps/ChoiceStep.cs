@@ -18,7 +18,7 @@ namespace TikuNchik.Core.Steps
 
         public IEnumerable<KeyValuePair<Func<Integration, bool>, IStep>> Criteria { get; }
 
-        public async Task PerformStepExecutionAsync(Integration integration)
+        public async Task<Integration> PerformStepExecutionAsync(Integration integration)
         {
             foreach (var criteria in this.Criteria)
             {
@@ -28,6 +28,8 @@ namespace TikuNchik.Core.Steps
                     break;
                 }
             }
+
+            return integration;
         }
 
     }

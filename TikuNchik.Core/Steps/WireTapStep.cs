@@ -19,11 +19,12 @@ namespace TikuNchik.Core.Steps
 
         public ILogger<WireTapStep> Logger { get; }
 
-        public Task PerformStepExecutionAsync(Integration integration)
+        public Task<Integration> PerformStepExecutionAsync(Integration integration)
         {
             return Task.Run(() =>
             {
                 Logger.LogInformation($"WireTap: [{integration}]");
+                return integration;
             });
         }
     }

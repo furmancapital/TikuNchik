@@ -27,9 +27,9 @@ namespace TikuNchik.Core.Builders
             this.FlowBuilder = IntegrationFlowBuilder.Create<string>(this.ServiceProvider.Object);
         }
 
-        private Integration CreateIntegration()
+        private Integration<string> CreateIntegration()
         {
-            return new Integration();
+            return new Integration<string>("A");
         }
 
         [Fact]

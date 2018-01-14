@@ -12,10 +12,10 @@ namespace TikuNchik.Core
         {
         }
 
-        public virtual async Task<TOutput> PerformStepExecutionAsyncWithResult(Integration integration, TBody message)
+        public virtual async Task<Integration<TOutput>> PerformStepExecutionAsyncWithResult(Integration integration, TBody message)
         {
             await this.PerformStepExecutionAsync(integration, message);
-            return (TOutput)integration.Body;
+            return (Integration<TOutput>)integration.Body;
         }
     }
 }

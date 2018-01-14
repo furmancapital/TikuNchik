@@ -52,7 +52,7 @@ namespace TikuNchik
                 .Log((x, y) => y.LogInformation("This is only a test!"))
                 .Build();
 
-            var result = await flow.CreateIntegration<int>(1);
+            var result = await flow.CreateIntegration(1);
             if (result == null)
             {
 

@@ -35,18 +35,22 @@ namespace TikuNchik.Core.Steps
         public IEnumerable<IStep> StepsToExecute { get; }
         public Func<Integration, bool> FilterToApply { get; }
 
-        public async Task PerformStepExecutionAsync(Integration integration)
+        public async Task<Integration> PerformStepExecutionAsync(Integration integration)
         {
             if (this.FilterToApply(integration))
             {
+                Integration currentIntegration = integration;
                 foreach (var stepToExecute in this.StepsToExecute)
                 {
-                    await stepToExecute.PerformStepExecutionAsync(integration);
+                    currentIntegration = await stepToExecute.PerformStepExecutionAsync(currentIntegration);
                 }
+
+                return currentIntegration;
             }
             else
             {
                 integration.SetFilteredOut("Filtered out by filter");
+                return integration;
             }
 
         }

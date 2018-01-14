@@ -15,9 +15,9 @@ namespace TikuNchik.Core.Steps
         }
 
 
-        private ExecuteAnotherFlowStep GetAnotherFlowStep()
+        private ExecuteAnotherFlowStep<string> GetAnotherFlowStep()
         {
-            return new ExecuteAnotherFlowStep(this.TargetFlow.Object);
+            return new ExecuteAnotherFlowStep<string>(this.TargetFlow.Object);
         }
 
 
@@ -27,22 +27,24 @@ namespace TikuNchik.Core.Steps
 
         }
 
-        private Integration CreateIntegration()
+        private Integration<string> CreateIntegration(string value)
         {
-            return new Integration();
+            return new Integration<string>(value);
         }
 
         [Fact]
         public void PerformStepExecutionAync_Ensure_Flow_Executed()
         {
-            this.TargetFlow.Setup(x => x.ExecuteCurrentIntegration(It.IsAny<Integration>()))
-                .Returns(Task.FromResult(0));
+            var integration = this.CreateIntegration("BODY");
+
+            this.TargetFlow.Setup(x => x.ExecuteCurrentIntegration<string>(It.IsAny<Integration<string>>()))
+                .Returns(Task.FromResult((Integration)integration));
 
             Func<Integration, bool> lambda = (x) => true;
 
             var step = this.GetAnotherFlowStep();
 
-            step.PerformStepExecutionAsync(this.CreateIntegration()).Wait();
+            step.PerformStepExecutionAsync(integration).Wait();
 
             this.TargetFlow.VerifyAll();
         }
