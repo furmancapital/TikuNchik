@@ -7,7 +7,7 @@ namespace TikuNchik.Core.Builders
 {
     public class TranslatorStepBuilder<TFrom, TTo>
     {
-        public static IntegrationFlowBuilder Translate (Func<TFrom, TTo> translator, IBuildableFlow sourceFlow, IntegrationFlowBuilder sourceBuilder)
+        public static IntegrationFlowBuilder<TFrom> Translate (Func<TFrom, TTo> translator, IBuildableFlow sourceFlow, IntegrationFlowBuilder<TFrom> sourceBuilder)
         {
             var generatedStep = new TranslatorStep<TFrom, TTo>(translator);
             sourceFlow.AddStep(generatedStep);

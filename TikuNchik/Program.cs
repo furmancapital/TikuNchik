@@ -22,8 +22,7 @@ namespace TikuNchik
                 })
                 .BuildServiceProvider();
 
-            var flow = IntegrationFlowBuilder
-                .Create<int>(serviceCollection)
+            var flow = new IntegrationFlowBuilder<int>(serviceCollection)
                 .Translate((x) => "A")
 
                 .ExceptionHandler()

@@ -8,7 +8,7 @@ using TikuNchik.Core.Steps;
 
 namespace TikuNchik.Core
 {
-    public class IntegrationFlowBuilder<TBody> : IntegrationFlowBuilder
+    public class IntegrationFlowBuilder<TBody>
     {
         public IntegrationFlowBuilder<TTo> Translate<TTo>(Func<TBody, TTo> translator)
         {
@@ -43,70 +43,37 @@ namespace TikuNchik.Core
             return LogStepBuilder.Log(this.CreatedFlow, this, actionToPerform, this.DependencyInjection);
         }
 
-        private static IntegrationFlowBuilder<TBodyType> FromExisting<TBodyType>(IntegrationFlowBuilder sourceBuilder)
+        private static IntegrationFlowBuilder<TBodyType> FromExisting<TBodyType>(IntegrationFlowBuilder<TBody> sourceBuilder)
         {
-            return new IntegrationFlowBuilder<TBodyType>()
+            return new IntegrationFlowBuilder<TBodyType>(sourceBuilder.DependencyInjection)
             {
-                CreatedFlow = sourceBuilder.CreatedFlow,
-                DependencyInjection = sourceBuilder.DependencyInjection
+                CreatedFlow = sourceBuilder.CreatedFlow
             };
         }
-    }
 
-
-    public class IntegrationFlowBuilder
-    {
         public Flow CreatedFlow
         {
-            get;set;
+            get;
+            private set;
         }
 
         protected ILoggerFactory LoggerFactory
         {
             get;
-            set;
+            private set;
         }
 
         public IServiceProvider DependencyInjection
         {
-            get;set;
+            get;
+            private set;
         }
 
-        public static IntegrationFlowBuilder<TBodyType> Create<TBodyType>(IServiceProvider dependencyInjection)
+        public IntegrationFlowBuilder(IServiceProvider serviceProvider)
         {
-            if (dependencyInjection == null)
-            {
-                throw new ArgumentNullException(nameof(dependencyInjection));
-            }
-
-            return new IntegrationFlowBuilder<TBodyType>()
-            {
-                DependencyInjection = dependencyInjection
-            };
-        }
-
-
-        public IntegrationFlowBuilder()
-        {
+            this.DependencyInjection = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             this.CreatedFlow = new Flow();
         }
-        
-
-
-
-        
-
-        /// <summary>
-        /// Creates a step that will trigger the resolution of the target dependency on each call
-        /// </summary>
-        /// <typeparam name="TItem"></typeparam>
-        /// <param name="actionToExecuteOnDependency"></param>
-        /// <returns></returns>
-        public IStep CreateFromServiceProvider<TItem>(Action<TItem, Integration> actionToExecuteOnDependency)
-        {
-            return new DependencyResolvedStep<TItem>(this.DependencyInjection, actionToExecuteOnDependency);
-        }
-
 
         public IFlow Build()
         {

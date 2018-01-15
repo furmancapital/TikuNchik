@@ -30,7 +30,7 @@ namespace TikuNchik.Core.Builders
 
         private IntegrationFlowBuilder<string> GetFlowBuilder()
         {
-            return new IntegrationFlowBuilder<string>();
+            return new IntegrationFlowBuilder<string>(this.Provider.Object);
         }
 
         ExceptionHandlerBuilder<string> GetExceptionHandlerBuilder()
