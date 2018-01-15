@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using TikuNchik.Core.Steps;
@@ -25,6 +27,12 @@ namespace TikuNchik.Core.Builders
             return this;
         }
 
+        public ChoiceStepBuilder<TBody> Log (Action<Integration<TBody>, ILogger> logAction)
+        {
+            var logger = this.SourceFlow.ServiceProvider.GetRequiredService<ILogger<LogStep<TBody>>>();
+            base.AddStep(new LogStep<TBody>(logger, logAction));
+            return this;
+        }
 
         public ChoiceBuilder<TBody> EndWhen()
         {

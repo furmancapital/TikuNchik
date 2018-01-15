@@ -20,5 +20,13 @@ namespace TikuNchik.Core
         /// </summary>
         /// <param name="exceptionHandler"></param>
         void AddExceptionHandler(IExceptionHandler exceptionHandler);
+
+        /// <summary>
+        /// Returns the associated service provider
+        /// </summary>
+        IServiceProvider ServiceProvider
+        {
+            get;
+        }
     }
 }

@@ -22,23 +22,41 @@ namespace TikuNchik.Core
             return new ExceptionHandlerBuilder<TBody>(this.CreatedFlow, this, this.DependencyInjection);
         }
 
+        /// <summary>
+        /// Creates a filter step allowing messages to be ignored
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         public FilterBuilder<TBody> Filter(Func<Integration, bool> filter)
         {
             return FilterBuilder<TBody>.Filter(filter, this.CreatedFlow, this);
         }
 
+        /// <summary>
+        /// Creates a choice allowing for "if-else" type logic
+        /// </summary>
+        /// <returns></returns>
         public ChoiceBuilder<TBody> Choice()
         {
             return ChoiceBuilder<TBody>.Choice(this.CreatedFlow, this);
         }
 
+        /// <summary>
+        /// Creates a wire tap step allowing for the contents of the Integration
+        /// to be logged
+        /// </summary>
+        /// <returns></returns>
         public IntegrationFlowBuilder<TBody> WireTap()
         {
             return WireTapBuilder.WireTap(this.CreatedFlow, this, this.DependencyInjection);
         }
 
-
-        public IntegrationFlowBuilder<TBody> Log(Action<Integration, ILogger> actionToPerform)
+        /// <summary>
+        /// Creates a step allowing for logging to take place
+        /// </summary>
+        /// <param name="actionToPerform"></param>
+        /// <returns></returns>
+        public IntegrationFlowBuilder<TBody> Log(Action<Integration<TBody>, ILogger> actionToPerform)
         {
             return LogStepBuilder.Log(this.CreatedFlow, this, actionToPerform, this.DependencyInjection);
         }
@@ -57,12 +75,6 @@ namespace TikuNchik.Core
             private set;
         }
 
-        protected ILoggerFactory LoggerFactory
-        {
-            get;
-            private set;
-        }
-
         public IServiceProvider DependencyInjection
         {
             get;
@@ -72,7 +84,7 @@ namespace TikuNchik.Core
         public IntegrationFlowBuilder(IServiceProvider serviceProvider)
         {
             this.DependencyInjection = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-            this.CreatedFlow = new Flow();
+            this.CreatedFlow = new Flow(serviceProvider);
         }
 
         public IFlow Build()

@@ -6,21 +6,21 @@ using System.Threading.Tasks;
 
 namespace TikuNchik.Core.Steps
 {
-    public class LogStep : IStep
+    public class LogStep<TBody> : IStep
     {
 
-        public LogStep (ILogger<LogStep> logger, Action<Integration, ILogger<LogStep>> actionToPerform)
+        public LogStep (ILogger logger, Action<Integration<TBody>, ILogger> actionToPerform)
         {
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             ActionToPerform = actionToPerform ?? throw new ArgumentNullException(nameof(actionToPerform));
         }
 
-        public ILogger<LogStep> Logger { get; }
-        public Action<Integration, ILogger<LogStep>> ActionToPerform { get; }
+        public ILogger Logger { get; }
+        public Action<Integration<TBody>, ILogger> ActionToPerform { get; }
 
         public Task<Integration> PerformStepExecutionAsync(Integration integration)
         {
-            this.ActionToPerform(integration, this.Logger);
+            this.ActionToPerform((Integration<TBody>)integration, this.Logger);
             return Task.FromResult(integration);
         }
     }

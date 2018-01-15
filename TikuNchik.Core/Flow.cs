@@ -12,11 +12,12 @@ namespace TikuNchik.Core
     /// </summary>
     public class Flow : IBuildableFlow, IFlow
     {
-        public Flow()
+        public Flow(IServiceProvider serviceProvider)
         {
-
+            ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
 
+        public IServiceProvider ServiceProvider { get; }
         private List<IStep> Steps
         {
             get;

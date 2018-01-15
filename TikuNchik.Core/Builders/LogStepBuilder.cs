@@ -9,9 +9,11 @@ namespace TikuNchik.Core.Builders
 {
     public class LogStepBuilder
     {
-        public static IntegrationFlowBuilder<TBody> Log<TBody>(IBuildableFlow sourceFlow, IntegrationFlowBuilder<TBody> builder, Action<Integration, ILogger> action, IServiceProvider serviceProvider)
+        public static IntegrationFlowBuilder<TBody> Log<TBody>(IBuildableFlow sourceFlow, IntegrationFlowBuilder<TBody> builder, Action<Integration<TBody>, ILogger> action, IServiceProvider serviceProvider)
         {
-            var logStep = new LogStep(serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger<LogStep>(), action);
+            var logStep = new LogStep<TBody>(serviceProvider.GetRequiredService<ILoggerFactory>()
+                .CreateLogger(typeof(LogStep<TBody>)), action);
+
             sourceFlow.AddStep(logStep);
             return builder;
         }

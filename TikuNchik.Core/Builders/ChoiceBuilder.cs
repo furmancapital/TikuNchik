@@ -68,17 +68,19 @@ namespace TikuNchik.Core.Builders
         {
             this.SourceFlow.AddStep(StepBuilderHelpers.FromLambda(async (x) => 
             {
+                var stepTriggered = false;
                 var defaultStep = this.DefaultHandler;
                 foreach (var step in this.GeneratedSteps)
                 {
                     if (step.Key(x))
                     {
                         await step.Value.PerformStepExecutionAsync(x);
+                        stepTriggered = true;
                         break;
                     }
                 }
 
-                if (defaultStep != null)
+                if (!stepTriggered && defaultStep != null)
                 {
                     await defaultStep.PerformStepExecutionAsync(x);
                 }

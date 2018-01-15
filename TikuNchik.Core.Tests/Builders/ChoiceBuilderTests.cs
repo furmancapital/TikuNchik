@@ -129,5 +129,30 @@ namespace TikuNchik.Core.Builders
 
             }
         }
+
+        [Fact]
+        public void EndChoice_Verify_DefaultNotTriggered_If_Previous_Condition_Met()
+        {
+            using (var defaultChoiceTriggered = new ManualResetEventSlim())
+            {
+                var flow = this.FlowBuilder
+                    .Choice()
+                        .When((x) => x.Body != null)
+                            //this one should be triggered
+                        .EndWhen()
+                        .Default()
+                            .AddDefaultStep((x) => defaultChoiceTriggered.Set())
+                        .EndDefault()
+                    .EndChoice()
+                .Build();
+
+                var integration = this.CreateIntegration();
+                integration.AddHeader("A", null);
+                flow.ExecuteCurrentIntegration(integration);
+
+                Assert.False(defaultChoiceTriggered.Wait(TimeSpan.FromSeconds(0)));
+
+            }
+        }
     }
 }

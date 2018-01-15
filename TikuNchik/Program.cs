@@ -37,13 +37,13 @@ namespace TikuNchik
                     .When(x =>  x.Id != null)
                         .AddChoiceStep((x) =>
                         {
-                            System.Console.WriteLine("AAAAA");
+                            System.Console.WriteLine("choice 1");
                        })
                     .EndWhen()
                     .Default()
                         .AddDefaultStep((x) =>
                         {
-                            System.Console.WriteLine("AAAAA");
+                            System.Console.WriteLine("Default choice");
                         })
                      .EndDefault()
                 .EndChoice()
